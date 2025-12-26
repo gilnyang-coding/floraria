@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviour 
 {
@@ -25,8 +26,8 @@ public class PlayerMove : MonoBehaviour
     
     void Update()
     {
-        // 우클릭 감지
-        if (Input.GetMouseButtonDown(1))
+        // 우클릭 감지 (새로운 Input System)
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             MoveToMousePosition();
         }
@@ -40,8 +41,11 @@ public class PlayerMove : MonoBehaviour
     
     void MoveToMousePosition()
     {
-        // 마우스 위치에서 레이캐스트
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        // 마우스 위치에서 레이캐스트 (새로운 Input System)
+        if (Mouse.current == null) return;
+        
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Ray ray = mainCamera.ScreenPointToRay(mousePosition);
         RaycastHit hit;
         
         if (Physics.Raycast(ray, out hit, maxRaycastDistance, groundLayer))
