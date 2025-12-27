@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviour 
 {
     [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float stoppingDistance = 0.1f;
     
     [Header("Raycast Settings")]
@@ -14,12 +14,15 @@ public class PlayerMove : MonoBehaviour
     private Camera mainCamera;
     private Vector3 targetPosition;
     private bool isMoving = false;
-    
+    private Animator animator;
+
     void Start() {
         mainCamera = Camera.main;
         if (mainCamera == null) {
             mainCamera = FindFirstObjectByType<Camera>();
         }
+
+        animator = GetComponent<Animator>();
     }
     
     void Update() {
@@ -31,6 +34,10 @@ public class PlayerMove : MonoBehaviour
         // 이동 처리
         if (isMoving) {
             MoveToTarget();
+        }
+
+        if (animator != null) {
+            animator.SetBool("IsMoving", isMoving);
         }
     }
     
