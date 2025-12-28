@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviour 
 {
     [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 1f;
+    [SerializeField] private float walkSpeed = 1f;
+    [SerializeField] private float runSpeed = 3f;
     [SerializeField] private float stoppingDistance = 0.1f;
     
     [Header("Raycast Settings")]
@@ -13,7 +14,8 @@ public class PlayerMove : MonoBehaviour
     
     private Camera mainCamera;
     private Vector3 targetPosition;
-    private bool isMoving = false;
+    public bool isMoving = false;
+    public bool isRunning = false;
     private Animator animator;
 
     void Start() {
@@ -26,6 +28,10 @@ public class PlayerMove : MonoBehaviour
     }
     
     void Update() {
+        if (Keyboard.current != null) {
+            isRunning = Keyboard.current.leftShiftKey.isPressed;
+        }
+        
         // 우클릭 감지=> 1초에 수 십번 호출되는 이벤트
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) {
             MoveToMousePosition();
@@ -38,6 +44,7 @@ public class PlayerMove : MonoBehaviour
 
         if (animator != null) {
             animator.SetBool("IsMoving", isMoving);
+            animator.SetBool("IsRunning", isRunning && isMoving);
         }
     }
     
@@ -67,12 +74,13 @@ public class PlayerMove : MonoBehaviour
         float distance = Vector3.Distance(transform.position, targetPosition);
         
         if (distance > stoppingDistance) {
+            float speed = isRunning ? runSpeed : walkSpeed;
             // 목표 위치로 이동
             //(targetPosition - transform.position): 현재에서 목표까지의 거리와 방향을 나타내는 벡터가 생성됨(물리학에서 많이 보는 거)
             //.normalized: 벡터의 크기를 1로 만든다.(물리학의 i, j, k 벡터)
             Vector3 direction = (targetPosition - transform.position).normalized;
             // s = v*t (s, v는 벡터량) 시간은 프레임 단위로 계산되기 때문에 Time.deltaTime을 곱해줘 유니티가 알아서 잘 처리하게 해준다.
-            transform.position += direction * moveSpeed * Time.deltaTime;
+            transform.position += direction * speed * Time.deltaTime;
             
             // 이동 방향으로 회전 (Y축만)
             //direction.magnitude > 0.1f: 벡터의 크기를 계산해서 0.1보다 크면 회전
@@ -90,6 +98,27 @@ public class PlayerMove : MonoBehaviour
             transform.position = targetPosition;
         }
     }
+
+    [Header("Audio Settings")]
+[SerializeField] private AudioSource audioSource;
+[SerializeField] private AudioClip walkSound;
+[SerializeField] private AudioClip runSound;
+
+public void PlayFootstep() 
+{
+    // 로그를 찍어서 이벤트가 오는지 먼저 확인하세요!
+    Debug.Log("발소리 이벤트 신호 들어옴!");
+
+    if (!isMoving || audioSource == null) return;
+
+    // clip을 변경하지 않고 바로 OneShot으로 재생 (더 안전함)
+    AudioClip clipToPlay = isRunning ? runSound : walkSound;
+    
+    if (clipToPlay != null)
+    {
+        audioSource.PlayOneShot(clipToPlay);
+    }
+}
     
     // 디버그용: Scene 뷰에서 목표 위치 표시
     void OnDrawGizmos() {
