@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 394521e493a2d47efbb517c03917f1b5
+timeCreated: 1542089121
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 221887
+  packageName: Low Poly Monster Bundle 2 - 19 Character Packs! - Fantasy RPG
+  packageVersion: 4.3.2
+  assetPath: Assets/InfinityPBR - Magic Pig Games/Characters/Demoness/Scripts/SFB_DemonessDemo.cs
+  uploadId: 738089

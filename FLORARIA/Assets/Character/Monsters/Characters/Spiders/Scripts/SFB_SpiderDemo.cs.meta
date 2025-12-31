@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 9d7431231ad164ab783b89bf54cacc7d
+timeCreated: 1513987406
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 221887
+  packageName: Low Poly Monster Bundle 2 - 19 Character Packs! - Fantasy RPG
+  packageVersion: 4.3.2
+  assetPath: Assets/InfinityPBR - Magic Pig Games/Characters/Spiders/Scripts/SFB_SpiderDemo.cs
+  uploadId: 738089

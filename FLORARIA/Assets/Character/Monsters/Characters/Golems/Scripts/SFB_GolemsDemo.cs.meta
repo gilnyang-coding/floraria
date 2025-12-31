@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 48834be2b1f8642e1b4f9896e06cc3a3
+timeCreated: 1523330272
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 221887
+  packageName: Low Poly Monster Bundle 2 - 19 Character Packs! - Fantasy RPG
+  packageVersion: 4.3.2
+  assetPath: Assets/InfinityPBR - Magic Pig Games/Characters/Golems/Scripts/SFB_GolemsDemo.cs
+  uploadId: 738089
