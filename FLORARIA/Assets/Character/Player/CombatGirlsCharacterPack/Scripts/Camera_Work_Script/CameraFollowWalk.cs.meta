@@ -14,5 +14,5 @@ AssetOrigin:
   productId: 322644
   packageName: CombatGirls_KatanaCharacterPack
   packageVersion: 1.1
-  assetPath: Assets/CombatGirlsCharacterPack/Scripts/Camera_Work_Script/CameraFollowWalk.cs
+  assetPath: Assets/Character/Player/CombatGirlsCharacterPack/Scripts/Camera_Work_Script/CameraFollowWalk.cs
   uploadId: 838896

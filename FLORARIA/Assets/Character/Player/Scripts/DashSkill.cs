@@ -19,16 +19,21 @@ public class DashSkill : SkillBase {
     }
 
     private System.Collections.IEnumerator DashRoutine(Vector3 targetPos) {
-        IsActive = true; // 상태 활성화
+        IsActive = true;
         if (animator != null) animator.SetBool("Dash_F", true);
         
+        // 이미 컨트롤러에서 계산된 안정적인 방향을 사용합니다.
         Vector3 dir = (targetPos - transform.position).normalized;
         dir.y = 0;
+
         rb.linearVelocity = dir * dashSpeed;
 
         yield return new WaitForSeconds(dashDuration);
 
+        // 대쉬 종료 시 속도 초기화
+        rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        
         if (animator != null) animator.SetBool("Dash_F", false);
-        IsActive = false; // 상태 비활성화
+        IsActive = false; 
     }
 }

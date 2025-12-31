@@ -2,16 +2,35 @@ using UnityEngine;
 
 public class MonsterAttack : MonoBehaviour {
     private Animator animator;
+    [Header("Attack Settings")]
+    [SerializeField] private float attackDamage = 10f; // 공격력
     [SerializeField] private float attackCooldown = 2f;
+    [SerializeField] private float attackRange = 2f;
+    
     private float lastAttackTime;
+    private Transform player;
 
-    void Awake() => animator = GetComponent<Animator>();
+    void Awake() {
+        animator = GetComponent<Animator>();
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) player = p.transform;
+    }
 
-    public bool CanAttack() => Time.time >= lastAttackTime + attackCooldown;
+    public bool CanAttack() {
+        return Time.time >= lastAttackTime + attackCooldown;
+    }
 
     public void ExecuteAttack() {
         lastAttackTime = Time.time;
-        // Any State에서 연결된 attack1 트리거 실행
-        animator.SetTrigger("attack1"); 
+        animator.SetTrigger("attack1"); //
+
+        // 실제 데미지 판정 로직
+        if (player != null && Vector3.Distance(transform.position, player.position) <= attackRange) {
+            // [핵심] 플레이어의 구체적인 클래스를 몰라도 인터페이스로 접근 가능
+            IDamageable target = player.GetComponent<IDamageable>();
+            if (target != null) {
+                target.TakeDamage(attackDamage);
+            }
+        }
     }
 }

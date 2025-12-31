@@ -630,6 +630,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8758011989475053553, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1158872938}
+    - targetCorrespondingSourceObject: {fileID: 8758011989475053553, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1158872941}
+    - targetCorrespondingSourceObject: {fileID: 8758011989475053553, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1158872942}
   m_SourcePrefab: {fileID: 100100000, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
 --- !u!1 &832575517
 GameObject:
@@ -691,6 +697,10 @@ PrefabInstance:
     - target: {fileID: 7297188226049556626, guid: 7099db345599a4d978b4318514161ea5, type: 3}
       propertyPath: m_Name
       value: Spiders_LP
+      objectReference: {fileID: 0}
+    - target: {fileID: 7297188226049556626, guid: 7099db345599a4d978b4318514161ea5, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7930560402594241064, guid: 7099db345599a4d978b4318514161ea5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -754,6 +764,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7297188226049556626, guid: 7099db345599a4d978b4318514161ea5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1023331548}
+    - targetCorrespondingSourceObject: {fileID: 7297188226049556626, guid: 7099db345599a4d978b4318514161ea5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1023331551}
   m_SourcePrefab: {fileID: 100100000, guid: 7099db345599a4d978b4318514161ea5, type: 3}
 --- !u!1 &1023331537 stripped
 GameObject:
@@ -870,7 +883,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a94ed5c2e7b0a464cbb4ce8b5b91f7b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterAttack
+  attackDamage: 10
   attackCooldown: 2
+  attackRange: 2
+--- !u!114 &1023331551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023331537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd6f39c60cec8e48814fdd1442ff0d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 100
+  deathTriggerName: death1
 --- !u!1 &1097386802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,6 +1211,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55713132a667c604588794c9d15b4732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  maxRaycastDistance: 100
+--- !u!114 &1158872941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158872929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd6f39c60cec8e48814fdd1442ff0d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 100
+  deathTriggerName: death1
+--- !u!114 &1158872942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158872929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deaa536039e1ae34d9b602ceeed417ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  skillName: 
+  cooldown: 1
+  damage: 20
+  attackRange: 1.5
+  attackRadius: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1001 &1823770648
 PrefabInstance:
   m_ObjectHideFlags: 0

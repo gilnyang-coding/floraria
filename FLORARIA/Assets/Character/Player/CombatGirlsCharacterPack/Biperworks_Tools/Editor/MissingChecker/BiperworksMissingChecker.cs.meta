@@ -14,5 +14,5 @@ AssetOrigin:
   productId: 322644
   packageName: CombatGirls_KatanaCharacterPack
   packageVersion: 1.1
-  assetPath: Assets/CombatGirlsCharacterPack/Biperworks_Tools/Editor/MissingChecker/BiperworksMissingChecker.cs
+  assetPath: Assets/Character/Player/CombatGirlsCharacterPack/Biperworks_Tools/Editor/MissingChecker/BiperworksMissingChecker.cs
   uploadId: 838896

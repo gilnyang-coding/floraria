@@ -125,5 +125,5 @@ AssetOrigin:
   productId: 322644
   packageName: CombatGirls_KatanaCharacterPack
   packageVersion: 1.1
-  assetPath: Assets/CombatGirlsCharacterPack/Humanoid_Bot/Texture/Humanoid_Head_Albedo.png
+  assetPath: Assets/Character/Player/CombatGirlsCharacterPack/Humanoid_Bot/Texture/Humanoid_Head_Albedo.png
   uploadId: 838896

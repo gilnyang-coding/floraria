@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 322644
   packageName: CombatGirls_KatanaCharacterPack
   packageVersion: 1.1
-  assetPath: Assets/CombatGirlsCharacterPack/Humanoid_Bot/Prefab/Humanoid_F.prefab
+  assetPath: Assets/Character/Player/CombatGirlsCharacterPack/Humanoid_Bot/Prefab/Humanoid_F.prefab
   uploadId: 838896

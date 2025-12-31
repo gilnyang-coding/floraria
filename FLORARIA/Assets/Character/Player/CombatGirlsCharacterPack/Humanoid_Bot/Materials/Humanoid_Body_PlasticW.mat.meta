@@ -11,5 +11,5 @@ AssetOrigin:
   productId: 322644
   packageName: CombatGirls_KatanaCharacterPack
   packageVersion: 1.1
-  assetPath: Assets/CombatGirlsCharacterPack/Humanoid_Bot/Materials/Humanoid_Body_PlasticW.mat
+  assetPath: Assets/Character/Player/CombatGirlsCharacterPack/Humanoid_Bot/Materials/Humanoid_Body_PlasticW.mat
   uploadId: 838896

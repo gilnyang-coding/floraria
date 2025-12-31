@@ -14,5 +14,5 @@ AssetOrigin:
   productId: 322644
   packageName: CombatGirls_KatanaCharacterPack
   packageVersion: 1.1
-  assetPath: Assets/CombatGirlsCharacterPack/Scripts/UI_Script/ButtonGenerator.cs
+  assetPath: Assets/Character/Player/CombatGirlsCharacterPack/Scripts/UI_Script/ButtonGenerator.cs
   uploadId: 838896
