@@ -8,7 +8,7 @@ public class CameraFollow : MonoBehaviour
 
     [Header("Zoom Settings")]
     public float normalFOV = 55f; //fov: field of view
-    public float runFOV = 60f;
+    public float dashFOV = 65f;
     public float zoomSpeed = 5f;
 
     private Camera mainCamera;
@@ -36,8 +36,8 @@ public class CameraFollow : MonoBehaviour
     void HandleZoom() {
         if (mainCamera == null || playerMove == null) return;
 
-        bool isRunning = playerMove.isRunning && playerMove.isMoving;
-        float targetFov = isRunning? runFOV : normalFOV;
+        bool dash = playerMove.dash_F;
+        float targetFov = dash? dashFOV : normalFOV;
         mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFov, zoomSpeed * Time.deltaTime);
     }
 }

@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections; // 코루틴 사용을 위해 필요
 
 public class PlayerMove : MonoBehaviour 
 {
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 1f;
-    [SerializeField] private float runSpeed = 3f;
+    [SerializeField] private float dashSpeed = 10f; // 대쉬는 순간적으로 빨라야 하므로 값을 높였습니다.
+    [SerializeField] private float dashDuration = 0.2f; // 대쉬가 지속되는 시간 (초)
+    [SerializeField] private float dashCooldown = 5f;   // 대쉬 재사용 대기시간 (초)
     [SerializeField] private float stoppingDistance = 0.1f;
     
     [Header("Raycast Settings")]
@@ -15,113 +18,123 @@ public class PlayerMove : MonoBehaviour
     private Camera mainCamera;
     private Vector3 targetPosition;
     public bool isMoving = false;
-    public bool isRunning = false;
+    
+    [Header("Dash States")]
+    public bool dash_F = false;      // 애니메이션 파라미터용
+    private bool isDashing = false;  // 현재 대쉬 중인지 체크
+    private bool canDash = true;     // 쿨타임 체크용
+    
     private Animator animator;
+    private Rigidbody rb;
 
     void Start() {
-    mainCamera = Camera.main;
-    if (mainCamera == null) {
-        mainCamera = FindFirstObjectByType<Camera>();
+        mainCamera = Camera.main;
+        if (mainCamera == null) mainCamera = FindFirstObjectByType<Camera>();
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.freezeRotation = true;
     }
-    animator = GetComponent<Animator>();
-}
 
     void Update() {
-        if (Keyboard.current != null) {
-            isRunning = Keyboard.current.leftShiftKey.isPressed;
+        // 대쉬 입력 (한 번 눌렀을 때 실행)
+        if (Keyboard.current != null && Keyboard.current.leftShiftKey.wasPressedThisFrame) {
+            if (canDash && isMoving) { // 움직이고 있을 때만 대쉬 가능
+                StartCoroutine(PerformDash());
+            }
         }
         
-        // 우클릭 감지=> 1초에 수 십번 호출되는 이벤트
+        // 우클릭 이동
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) {
             MoveToMousePosition();
-        }
-        
-        // 이동 처리
-        if (isMoving) {
-            MoveToTarget();
         }
 
         if (animator != null) {
             animator.SetBool("IsMoving", isMoving);
-            animator.SetBool("IsRunning", isRunning && isMoving);
+            animator.SetBool("Dash_F", dash_F); 
+        }
+    }
+
+    void FixedUpdate() {
+        if (isMoving && !isDashing) { // 대쉬 중이 아닐 때만 일반 이동 처리
+            MoveToTarget();
         }
     }
     
-    void MoveToMousePosition() {
-        // 마우스 위치에서 레이캐스트
-        if (Mouse.current == null) return;
+    // [핵심 로직] 대쉬 실행 및 쿨타임 코루틴
+    IEnumerator PerformDash() {
+        canDash = false;    // 쿨타임 시작
+        isDashing = true;   // 대쉬 상태 시작
+        dash_F = true;      // 애니메이션 켜기
+
+        // 대쉬 방향 결정 (현재 바라보는 방향 혹은 이동 방향)
+        Vector3 dashDirection = (targetPosition - transform.position).normalized;
+        dashDirection.y = 0;
+
+        // 대쉬 속도 적용
+        rb.linearVelocity = dashDirection * dashSpeed;
+
+        yield return new WaitForSeconds(dashDuration); // 대쉬 지속 시간만큼 대기
+
+        dash_F = false;     // 애니메이션 끄기
+        isDashing = false;  // 대쉬 상태 끝
         
-        //Mouse.current: 현재 활성화된 마우스
-        //.position.ReadValue(): 그 마우스가 찍은 위치의 값을 읽는다.
-        //Vector2: 2차원 벡터
+        // 5초 쿨타임 대기
+        Debug.Log("대쉬 쿨타임 시작 (5초)");
+        yield return new WaitForSeconds(dashCooldown);
+        
+        canDash = true;     // 다시 대쉬 가능
+        Debug.Log("대쉬 준비 완료!");
+    }
+    
+    void MoveToMousePosition() {
+        if (Mouse.current == null) return;
         Vector2 mousePosition = Mouse.current.position.ReadValue();
-        //ScreenPointToRay: 카메라의 시점에서 마우스가 찍은 위치를 향하는 레이를 만든다.
         Ray ray = mainCamera.ScreenPointToRay(mousePosition);
-        //RaycastHit: 레이가 충돌한 객체의 정보를 담고 있다.
         RaycastHit hit;
         
-        //maxRaycastDistance: 레이가 충돌할 수 있는 최대 거리
-        //groundLayer: 레이가 충돌할 수 있는 레이어
         if (Physics.Raycast(ray, out hit, maxRaycastDistance, groundLayer)) {
             targetPosition = hit.point;
             isMoving = true;
         }
     }
     
-    void MoveToTarget() {
-        // 목표 위치까지의 거리 계산 Distance(현재, 목표)
-        float distance = Vector3.Distance(transform.position, targetPosition);
+void MoveToTarget() {
+    Vector3 currentPos = transform.position;
+    Vector3 targetPosXZ = new Vector3(targetPosition.x, currentPos.y, targetPosition.z);
+    float distance = Vector3.Distance(currentPos, targetPosXZ);
+    
+    if (distance > stoppingDistance) {
+        float currentSpeed = dash_F ? dashSpeed : walkSpeed;
+        Vector3 direction = (targetPosXZ - currentPos).normalized;
+
+        // [개선된 부분] 
+        // 단순히 속도를 덮어씌우는 게 아니라, 
+        // 캡슐 콜라이더가 돌을 타고 미끄러지도록 물리 엔진의 자연스러운 반작용을 허용합니다.
+        Vector3 velocity = direction * currentSpeed;
         
-        if (distance > stoppingDistance) {
-            float speed = isRunning ? runSpeed : walkSpeed;
-            // 목표 위치로 이동
-            //(targetPosition - transform.position): 현재에서 목표까지의 거리와 방향을 나타내는 벡터가 생성됨(물리학에서 많이 보는 거)
-            //.normalized: 벡터의 크기를 1로 만든다.(물리학의 i, j, k 벡터)
-            Vector3 direction = (targetPosition - transform.position).normalized;
-            // s = v*t (s, v는 벡터량) 시간은 프레임 단위로 계산되기 때문에 Time.deltaTime을 곱해줘 유니티가 알아서 잘 처리하게 해준다.
-            transform.position += direction * speed * Time.deltaTime;
-            
-            // 이동 방향으로 회전 (Y축만)
-            //direction.magnitude > 0.1f: 벡터의 크기를 계산해서 0.1보다 크면 회전
-            if (direction.magnitude > 0.1f) {
-                //y축 고정, x,z축만 회전하면 좌우로만 회전할 수 있음.
-                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                //Slerp: 현재 회전에서 목표 회전까지 부드럽게 회전하게 해주는 함수
-                //Time.deltaTime * 10f: 돌아가는 빠르기를 정한다.
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
-            }
+        // Y축은 중력을 유지하고, XZ축은 목표 방향으로 힘을 줍니다.
+        // 이때 마찰력이 0인 Physic Material이 있다면 부드럽게 비벼집니다.
+        rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
+        
+        if (direction.magnitude > 0.1f) {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * 10f);
         }
-        else {
-            // 목표 위치에 도달
+    } else {
             isMoving = false;
-            transform.position = targetPosition;
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            transform.position = targetPosXZ;
         }
     }
 
     [Header("Audio Settings")]
-[SerializeField] private AudioSource audioSource;
-[SerializeField] private AudioClip walkSound;
-[SerializeField] private AudioClip runSound;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip walkSound;
+    [SerializeField] private AudioClip dashSound;
 
-public void PlayFootstep() 
-{
-    if (!isMoving || audioSource == null) return;
-
-    // clip을 변경하지 않고 바로 OneShot으로 재생 (더 안전함)
-    AudioClip clipToPlay = isRunning ? runSound : walkSound;
-    
-    if (clipToPlay != null)
-    {
-        audioSource.PlayOneShot(clipToPlay);
-    }
-}
-    
-    // 디버그용: Scene 뷰에서 목표 위치 표시
-    void OnDrawGizmos() {
-        if (isMoving) {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(targetPosition, 0.5f);
-            Gizmos.DrawLine(transform.position, targetPosition);
-        }
+    public void PlayFootstep() {
+        if (!isMoving || audioSource == null) return;
+        AudioClip clipToPlay = isDashing ? dashSound : walkSound;
+        if (clipToPlay != null) audioSource.PlayOneShot(clipToPlay);
     }
 }
