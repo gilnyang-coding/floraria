@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8efa452e4a8da2a45bed7acfdb3fd667
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Shaders/PolyboxCore.cginc
+  uploadId: 671242

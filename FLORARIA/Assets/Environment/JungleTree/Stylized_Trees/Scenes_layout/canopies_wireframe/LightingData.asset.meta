@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 297b40f650d5b1949879ebae44e3d457
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Scenes_layout/canopies_wireframe/LightingData.asset
+  uploadId: 671242

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2d37cc4f3a7539c4d81272cc7718a763
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Shaders/matte_shadow.shader
+  uploadId: 671242

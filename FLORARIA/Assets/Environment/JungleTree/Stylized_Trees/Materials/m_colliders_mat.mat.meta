@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c9ce3ddb071fc8748b98686370338ee1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Materials/m_colliders_mat.mat
+  uploadId: 671242

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e6b38187e6b08824fb9a2bbaedd8f3d5
+timeCreated: 1475706798
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Materials/m_ground_gray.mat
+  uploadId: 671242

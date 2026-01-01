@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a240f60fb0df9bd49bf2ef7bb1efb449
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Shaders/PolyboxStandard.shader
+  uploadId: 671242
