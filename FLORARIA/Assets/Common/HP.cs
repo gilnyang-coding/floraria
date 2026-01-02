@@ -3,7 +3,7 @@ using UnityEngine;
 public class Health : MonoBehaviour, IDamageable {
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
+    [SerializeField] private float currentHealth;
 
     [Header("Animation Settings")]
     [SerializeField] private string deathTriggerName = "death1";

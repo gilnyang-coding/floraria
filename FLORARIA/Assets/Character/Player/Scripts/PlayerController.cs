@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
     [Header("Raycast Settings")]
-    [SerializeField] private LayerMask groundLayer = -1;
     [SerializeField] private float maxRaycastDistance = 100f;
 
     private PlayerMove moveAction;
@@ -66,7 +65,10 @@ public class PlayerController : MonoBehaviour {
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Ray ray = mainCamera.ScreenPointToRay(mousePos);
         
-        if (Physics.Raycast(ray, out RaycastHit hit, maxRaycastDistance, groundLayer)) {
+        // Ground 레이어만 인식
+        LayerMask groundLayerMask = LayerMask.GetMask("Ground");
+        
+        if (Physics.Raycast(ray, out RaycastHit hit, maxRaycastDistance, groundLayerMask)) {
             targetPosition = hit.point;
         }
     }
