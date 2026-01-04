@@ -15,7 +15,7 @@ public class PlayerAttack : SkillBase {
     }
 
     public override void Execute(Vector3 targetPos) {
-        if (!canUse) return;
+        if (!canUse || Time.timeScale == 0f) return;
 
         // 1. 공격 애니메이션 실행
         IsActive = true;

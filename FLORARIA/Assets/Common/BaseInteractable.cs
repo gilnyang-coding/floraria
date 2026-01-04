@@ -18,6 +18,9 @@ public abstract class BaseInteractable : MonoBehaviour {
     }
 
     protected virtual void Update() {
+        // 시간이 멈춰있으면(인벤토리가 켜져 있으면) 상호작용 로직을 무시함
+        if (Time.timeScale == 0f) return;
+
         if (isPlayerInRange && Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) {
             OnInteract(playerRef);
         }

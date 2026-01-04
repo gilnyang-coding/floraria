@@ -44,31 +44,38 @@ public class Gatherable : BaseInteractable {
         Destroy(gameObject); // 나무 제거
     }
 
-private void SpawnItems() {
-    for (int i = 0; i < dropCount; i++) {
-        //아주 약간의 위치 오차를 주어 겹치지 않게 생성
-        Vector3 spawnPos = transform.position + new Vector3(Random.Range(-0.1f, 0.1f), 1.0f, Random.Range(-0.1f, 0.1f));
-        
-        //생성 시 랜덤한 회전값을 주어 더 자연스럽게 함
-        Quaternion randomRot = Quaternion.Euler(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
-        GameObject item = Instantiate(itemPrefab, spawnPos, randomRot);
-
-        //물리 힘 가하기
-        Rigidbody rb = item.GetComponent<Rigidbody>();
-        if (rb != null) {
-            // 위쪽(Y)으로 튀어오르면서 사방(X, Z)으로 퍼지는 힘 계산
-            Vector3 forceDir = new Vector3(Random.Range(-1f, 1f), 1.5f, Random.Range(-1f, 1f)).normalized;
-            float forcePower = Random.Range(4f, 7f); // 힘의 세기 조절
-            
-            // 순간적인 힘(Impulse)을 가함
-            rb.AddForce(forceDir * forcePower, ForceMode.Impulse);
-
-            // 무작위 회전력 추가 (떼구르르 구르는 효과)
-            Vector3 torqueDir = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-            rb.AddTorque(torqueDir * 5f, ForceMode.Impulse);
+    private void SpawnItems() {
+        // 플레이어 방향 가져오기
+        Vector3 playerForward = Vector3.forward; // 기본값
+        if (playerRef != null) {
+            playerForward = playerRef.transform.forward;
+        } else {
+            // 플레이어를 찾을 수 없으면 태그로 찾기
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) {
+                playerForward = player.transform.forward;
+            }
         }
+        
+        // BaseItem의 LaunchItem()이 플레이어 방향을 사용하도록 설정
+        BaseItem.playerForwardDirection = playerForward;
+        BaseItem.usePlayerDirection = true;
+        
+        for (int i = 0; i < dropCount; i++) {
+            // 1. 위치: 플레이어 앞으로 약간의 위치 오차만 줌
+            Vector3 spawnOffset = new Vector3(Random.Range(-0.1f, 0.1f), 0.5f, Random.Range(-0.1f, 0.1f));
+            Vector3 spawnPos = transform.position + spawnOffset;
+            
+            GameObject item = Instantiate(itemPrefab, spawnPos, Quaternion.identity);
+
+            // BaseItem의 Start()에서 LaunchItem()이 호출되므로 여기서는 힘을 추가하지 않음
+            // LaunchItem()이 플레이어 방향을 사용하도록 이미 설정했음
+        }
+        
+        // 모든 아이템 생성 후 플래그 초기화
+        BaseItem.usePlayerDirection = false;
+        BaseItem.playerForwardDirection = null;
     }
-}
 
     // 시간제 방식이므로 단발성 OnInteract는 사용하지 않음
     public override void OnInteract(GameObject player) {}

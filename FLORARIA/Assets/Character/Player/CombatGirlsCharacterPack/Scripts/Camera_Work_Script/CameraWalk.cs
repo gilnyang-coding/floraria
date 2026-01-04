@@ -6,13 +6,13 @@ namespace CombatGirlsCharacterPack
 {
     public class CameraWalk : MonoBehaviour
     {
-        [Header("Ä«¸Ş¶ó ÀÌµ¿¼Óµµ")]
+        [Header("Ä«ï¿½Ş¶ï¿½ ï¿½Ìµï¿½ï¿½Óµï¿½")]
         public float moveSpeed = 10.0f;
-        [Header("Ä«¸Ş¶ó È¸Àü °¨µµ(¸¶¿ì½º)")]
+        [Header("Ä«ï¿½Ş¶ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ì½º)")]
         public float rotateSpeed = 500.0f;
-        [Header("Ä«¸Ş¶ó ÁÜ ¼Óµµ")]
+        [Header("Ä«ï¿½Ş¶ï¿½ ï¿½ï¿½ ï¿½Óµï¿½")]
         public float zoomSpeed = 10.0f;
-        [Header("Ä«¸Ş¶ó ÁÜ ÃÖ¼Ò/ÃÖ´ñ°ª")]
+        [Header("Ä«ï¿½Ş¶ï¿½ ï¿½ï¿½ ï¿½Ö¼ï¿½/ï¿½Ö´ï¿½")]
         public float minFov = 15.0f;
         public float maxFov = 90.0f;
 
@@ -25,11 +25,19 @@ namespace CombatGirlsCharacterPack
 
         protected virtual void Update()
         {
+            // 1. ì‹œê°„ì´ ë©ˆì¶°ìˆì„ ë•Œ(ì¸ë²¤í† ë¦¬ ì˜¤í”ˆ ì‹œ)ëŠ” ì¹´ë©”ë¼ ì´ë™/íšŒì „ ë¡œì§ì„ ì•„ì˜ˆ ì‹¤í–‰í•˜ì§€ ì•ŠìŒ
+            if (Time.timeScale == 0f) 
+            {
+                // ì¸ë²¤í† ë¦¬ê°€ ì—´ë ¤ìˆì„ ë•ŒëŠ” ê°•ì œë¡œ ë§ˆìš°ìŠ¤ë¥¼ ë³´ì—¬ì¤Œ
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                return; 
+            }
             myCameraWalk();
         }
         protected virtual void myCameraWalk()
         {
-            // WASD·Î Ä«¸Ş¶ó ÀÌµ¿
+            // WASDï¿½ï¿½ Ä«ï¿½Ş¶ï¿½ ï¿½Ìµï¿½
             float horizontal = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
             float vertical = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
             transform.Translate(horizontal, 0, vertical);
@@ -41,13 +49,13 @@ namespace CombatGirlsCharacterPack
             {
                 transform.Translate(0, moveSpeed * Time.deltaTime, 0);
             }
-            // ¸¶¿ì½º ÈÙ·Î È®´ë/Ãà¼Ò
+            // ï¿½ï¿½ï¿½ì½º ï¿½Ù·ï¿½ È®ï¿½ï¿½/ï¿½ï¿½ï¿½
             float fov = GetComponent<Camera>().fieldOfView;
             fov -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
             fov = Mathf.Clamp(fov, minFov, maxFov);
             GetComponent<Camera>().fieldOfView = fov;
 
-            // ¿À¸¥ÂÊ ¸¶¿ì½º·Î ¸¶¿ì½º Ä¿¼­ Ç¥½Ã/¼û±â±â
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ì½ºï¿½ï¿½ ï¿½ï¿½ï¿½ì½º Ä¿ï¿½ï¿½ Ç¥ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½
             VisibleMouse();
 
             // 
@@ -61,6 +69,9 @@ namespace CombatGirlsCharacterPack
         }
         protected void VisibleMouse()
         {
+            // 2. ì¸ë²¤í† ë¦¬ê°€ ì—´ë ¤ìˆì„ ë•ŒëŠ” ì—¬ê¸°ì„œ ì²˜ë¦¬í•˜ëŠ” Escape ì…ë ¥ì„ ë¬´ì‹œí•¨
+            if (Time.timeScale == 0f) return;
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 isCursorVisible = !isCursorVisible;
