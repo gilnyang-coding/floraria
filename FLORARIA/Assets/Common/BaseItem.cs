@@ -82,11 +82,17 @@ public ItemData data;
             
             // 1. 에셋의 싱글톤 컨트롤러가 존재하는지 확인합니다.
             if (InventoryController.instance != null) {
-                // 2. data.itemName("branch")을 사용하여 에셋 인벤토리에 추가합니다.
-                // "PlayerInventory"는 에셋 인스펙터에서 설정한 인벤토리 이름과 일치해야 합니다.
-                InventoryController.instance.AddItem("PlayerInventory", data.itemName, 1);
+                // 2. 먼저 핫바에 추가를 시도합니다. 핫바가 가득 차면 플레이어 인벤토리에 추가합니다.
+                string targetInventory = "PlayerInventory";
                 
-                Debug.Log($"[에셋 시스템] {data.itemName} 획득 완료");
+                // 핫바가 가득 차지 않았으면 핫바에 추가, 가득 찼으면 플레이어 인벤토리에 추가
+                if (!InventoryController.instance.InventoryFull("Hotbar", data.itemName)) {
+                    targetInventory = "Hotbar";
+                }
+                
+                InventoryController.instance.AddItem(targetInventory, data.itemName, 1);
+                
+                Debug.Log($"[에셋 시스템] {data.itemName} 획득 완료 ({targetInventory})");
                 Destroy(gameObject);
             }
             else {
