@@ -24,7 +24,12 @@ public class InventoryStateEffect : MonoBehaviour {
         } 
         else {
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None; 
+            Cursor.lockState = CursorLockMode.None;
+            
+            // 인벤토리 닫을 때 핫바 외 슬롯이 선택되어 있으면 핫바 1번으로 리셋
+            if (SlotSelectionManager.Instance != null) {
+                SlotSelectionManager.Instance.ResetToHotbar();
+            }
         }
     }
 }

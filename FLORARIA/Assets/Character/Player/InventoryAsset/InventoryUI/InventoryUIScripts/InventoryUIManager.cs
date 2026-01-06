@@ -463,6 +463,12 @@ namespace InventorySystem
                 Highlight(slot);
                 slotInstance.GetItem().Selected();
                 previouslyHighlighted = slot;
+                
+                // SlotSelectionManager에 슬롯 선택 알림
+                if (SlotSelectionManager.Instance != null)
+                {
+                    SlotSelectionManager.Instance.SelectSlot(inventoryName, slotInstance.GetPosition(), this);
+                }
             }
         }
 
