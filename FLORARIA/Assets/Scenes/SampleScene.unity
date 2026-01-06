@@ -3820,6 +3820,122 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1001 &424369369
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8292600945184373571, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_Name
+      value: Apple_LP
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -14.12873
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5414385
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 34.3936
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673629637147369977, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8292600945184373571, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 424369372}
+    - targetCorrespondingSourceObject: {fileID: 8292600945184373571, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 424369371}
+  m_SourcePrefab: {fileID: 100100000, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+--- !u!1 &424369370 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8292600945184373571, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+  m_PrefabInstance: {fileID: 424369369}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &424369371
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424369370}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 0.5, z: 0.5}
+  m_Center: {x: 0.00016973354, y: 0.042621635, z: -0.00016795285}
+--- !u!54 &424369372
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424369370}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &427189211
 GameObject:
   m_ObjectHideFlags: 0
@@ -9211,7 +9327,7 @@ MonoBehaviour:
   currentHydration: 100
   decayPerMinute: 1
   dashCost: 3
-  lowHydrationThreshold: 99
+  lowHydrationThreshold: 30
   speedReductionPercent: 0.2
   dehydrationDamagePerSecond: 1
 --- !u!1 &1164525831
@@ -17941,3 +18057,4 @@ SceneRoots:
   - {fileID: 316336139}
   - {fileID: 1910962865}
   - {fileID: 844497902}
+  - {fileID: 424369369}
