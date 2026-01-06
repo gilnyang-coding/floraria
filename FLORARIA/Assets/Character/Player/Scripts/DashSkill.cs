@@ -6,14 +6,22 @@ public class DashSkill : SkillBase {
     
     private Rigidbody rb;
     private Animator animator;
+    private Hydration hydration;
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        hydration = GetComponent<Hydration>();
     }
 
     public override void Execute(Vector3 targetPos) {
         if (!canUse) return;
+        
+        // 대쉬 시 수분 소모
+        if (hydration != null) {
+            hydration.OnDash();
+        }
+        
         StartCoroutine(DashRoutine(targetPos));
         StartCoroutine(CooldownRoutine());
     }

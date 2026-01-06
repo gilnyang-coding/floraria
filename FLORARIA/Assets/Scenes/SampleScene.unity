@@ -5749,6 +5749,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8758011989475053553, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1158872947}
+    - targetCorrespondingSourceObject: {fileID: 8758011989475053553, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1158872949}
   m_SourcePrefab: {fileID: 100100000, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
 --- !u!1 &764756373
 GameObject:
@@ -9192,6 +9195,25 @@ MonoBehaviour:
   hotbarInventoryName: Hotbar
   slotCount: 5
   useItemKey: 104
+--- !u!114 &1158872949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158872929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bd4ec1a3776fee46bc4c608553e01f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hydration
+  maxHydration: 100
+  currentHydration: 100
+  decayPerMinute: 1
+  dashCost: 3
+  lowHydrationThreshold: 99
+  speedReductionPercent: 0.2
+  dehydrationDamagePerSecond: 1
 --- !u!1 &1164525831
 GameObject:
   m_ObjectHideFlags: 0
