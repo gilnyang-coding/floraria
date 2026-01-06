@@ -27,6 +27,16 @@ public class Health : MonoBehaviour, IDamageable {
         }
     }
 
+    public void Heal(float amount) {
+        if (isDead) return;
+
+        // 음수 입력을 방지하고 최대 체력을 넘지 않도록 보정
+        float healValue = Mathf.Max(0f, amount);
+        currentHealth = Mathf.Min(currentHealth + healValue, maxHealth);
+
+        Debug.Log($"{gameObject.name} 체력 회복: +{healValue}, 현재 HP: {currentHealth}/{maxHealth}");
+    }
+
     private void Die() {
         if (isDead) return;
         isDead = true;
