@@ -1,7 +1,12 @@
 using UnityEngine;
 
 // 아이템의 카테고리 정의
-public enum ItemType { Resource, Consumable, Equipment }
+public enum ItemType { 
+    Resource,           // 자원
+    SurvivalConsumable, // 생존용 소모품 - 3초 쿨타임 공유
+    CombatConsumable,   // 전투형 소모품
+    Equipment           // 장비
+}
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject 

@@ -936,6 +936,28 @@ namespace InventorySystem
         {
             return SlotImage.regular;
         }
+
+        /// <summary>
+        /// 슬롯 인덱스로 하이라이트합니다. HotbarController에서 사용.
+        /// </summary>
+        public void HighlightSlotByIndex(int index)
+        {
+            if (positionToSlotDict != null && positionToSlotDict.ContainsKey(index))
+            {
+                Highlight(positionToSlotDict[index]);
+            }
+        }
+        
+        /// <summary>
+        /// 슬롯 인덱스로 하이라이트를 해제합니다.
+        /// </summary>
+        public void UnHighlightSlotByIndex(int index)
+        {
+            if (positionToSlotDict != null && positionToSlotDict.ContainsKey(index))
+            {
+                UnHighlight(positionToSlotDict[index]);
+            }
+        }
         private enum StartPositions
         {
             BottomLeft,

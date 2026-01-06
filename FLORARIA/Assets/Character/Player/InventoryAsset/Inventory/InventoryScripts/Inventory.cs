@@ -646,6 +646,10 @@ namespace InventorySystem
         {
             this.InventoryUIManager = manager;
         }
+        public GameObject GetUI()
+        {
+            return InventoryUIManager;
+        }
         public List<InventoryItem> GetList()
         {
             return inventoryList;
