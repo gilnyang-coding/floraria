@@ -23,7 +23,7 @@ public class ItemUsageManager : MonoBehaviour {
     private Coroutine castingCoroutine;
     
     // 캐스팅 입력 타입
-    private enum InputType { None, Keyboard, Mouse }
+    private enum InputType { None, Keyboard, Mouse, MouseDown }
     private InputType currentInputType = InputType.None;
     
     // 생존용 소모품 쿨타임 추적
@@ -79,6 +79,23 @@ public class ItemUsageManager : MonoBehaviour {
         
         TryUseItem(item, item.GetInventory(), player, InputType.Mouse);
     }
+    
+    /// <summary>
+    /// 슬롯에서 직접 아이템 사용 요청 (OnPointerDown - 꾹 누르기)
+    /// 선택된 슬롯이 아니더라도 길게 클릭으로 바로 사용 가능
+    /// </summary>
+    public void UseItemFromSlot(InventoryItem item, string inventoryName) {
+        if (item == null || item.GetIsNull()) return;
+        
+        // 플레이어 찾기
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) {
+            Debug.LogWarning("[ItemUsageManager] Player를 찾을 수 없습니다.");
+            return;
+        }
+        
+        TryUseItem(item, inventoryName, player, InputType.MouseDown);
+    }
 
     /// <summary>
     /// 아이템 사용 시도 (캐스팅 타임 + 쿨타임 적용)
@@ -126,14 +143,16 @@ public class ItemUsageManager : MonoBehaviour {
         
         Debug.Log($"[ItemUsageManager] {item.GetItemType()} 사용 준비 중... ({castingTime}초 동안 누르고 있으세요)");
         
-        // 마우스 입력의 경우: OnPointerClick이 버튼 뗄 때 발생하므로
+        // 마우스 입력의 경우 (OnPointerClick에서 호출된 경우): 버튼 뗄 때 발생하므로
         // 다시 버튼을 누를 때까지 대기
+        // MouseDown의 경우 (OnPointerDown에서 호출된 경우): 이미 버튼이 눌려있으므로 대기 불필요
         if (currentInputType == InputType.Mouse) {
             // 버튼이 눌릴 때까지 대기
             while (!Input.GetMouseButton(0)) {
                 yield return null;
             }
         }
+        // MouseDown은 이미 버튼이 눌려있으므로 대기 없이 바로 캐스팅 시작
         
         float elapsedTime = 0f;
         
@@ -183,6 +202,7 @@ public class ItemUsageManager : MonoBehaviour {
             case InputType.Keyboard:
                 return Input.GetKey(useItemKey);
             case InputType.Mouse:
+            case InputType.MouseDown: // 슬롯 직접 클릭 (OnPointerDown)
                 return Input.GetMouseButton(0); // 좌클릭
             default:
                 return false;

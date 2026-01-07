@@ -9,7 +9,7 @@ namespace InventorySystem
     /// <summary>
     /// This class creates a slot gameObject that displays an image of the item when notified by the assigned inventory
     /// </summary>
-    public class Slot : MonoBehaviour, IPointerClickHandler
+    public class Slot : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
     {
         [SerializeField]
         private int position;//The position if the inventories items list
@@ -112,6 +112,26 @@ namespace InventorySystem
         {
             inventoryUIManager.SetPressed(gameObject);
             inventoryUIManager.MoveOnPress(gameObject);
+        }
+        
+        /// <summary>
+        /// 슬롯을 누르는 순간 아이템 사용 시도 (1초간 꾹 누르면 사용)
+        /// 선택된 슬롯이 아니더라도 길게 클릭으로 바로 사용 가능
+        /// </summary>
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            // 좌클릭만 처리
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+            
+            // 아이템이 있는 경우에만 사용 시도
+            if (item != null && !item.GetIsNull())
+            {
+                if (ItemUsageManager.Instance != null)
+                {
+                    string inventoryName = inventoryUIManager.GetInventoryName();
+                    ItemUsageManager.Instance.UseItemFromSlot(item, inventoryName);
+                }
+            }
         }
         public void SetTextSize(float size)
         {
