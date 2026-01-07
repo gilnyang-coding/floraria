@@ -476,7 +476,7 @@ namespace InventorySystem
             }
             if (!itemPositions.ContainsKey(itemType))
             {
-                Debug.LogError("ItemPositions does not contain itemType: " + itemType + ". Returning 0");
+                // 아이템이 인벤토리에 없으면 0 반환 (정상 동작)
                 return 0;
             }
             List<int> items = itemPositions[itemType];

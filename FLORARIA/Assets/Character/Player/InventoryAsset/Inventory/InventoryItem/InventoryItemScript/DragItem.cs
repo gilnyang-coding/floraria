@@ -242,6 +242,8 @@ namespace InventorySystem
         /// </summary>
         private bool Draggable()
         {
+            // item이 null이면 드래그 불가
+            if (item == null) return true; // true를 반환하면 드래그 로직을 건너뜀
             return CurrentSlot != null && (!item.GetDraggable() || !CurrentSlot.GetInventoryUI().GetDraggable());
         }
 
@@ -319,6 +321,17 @@ namespace InventorySystem
         public void SetReturnOnMiss(bool returnOnMiss)
         {
             this.returnOnMiss = returnOnMiss;
+        }
+        
+        /// <summary>
+        /// 텍스트 숨기기 (제작대 등에서 사용)
+        /// </summary>
+        public void HideText()
+        {
+            if (text != null)
+            {
+                text.gameObject.SetActive(false);
+            }
         }
     }
 }

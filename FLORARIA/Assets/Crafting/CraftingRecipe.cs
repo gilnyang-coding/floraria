@@ -18,13 +18,11 @@ public class CraftingIngredient {
 
 /// <summary>
 /// 제작 레시피 ScriptableObject
-/// - 결과물 아이템
-/// - 필요한 재료 목록
 /// </summary>
 [CreateAssetMenu(fileName = "New Recipe", menuName = "Crafting/Recipe")]
 public class CraftingRecipe : ScriptableObject {
     [Header("결과물")]
-    [Tooltip("제작 결과 아이템 타입")]
+    [Tooltip("제작 결과 아이템 타입 (InventoryController items에 등록된 이름)")]
     public string resultItemType;
     
     [Tooltip("결과물 개수")]
@@ -33,16 +31,15 @@ public class CraftingRecipe : ScriptableObject {
     [Tooltip("결과물 표시 이름 (한글)")]
     public string resultDisplayName;
     
-    [Tooltip("결과물 아이콘 (없으면 ItemInitializer에서 가져옴)")]
+    [Tooltip("결과물 아이콘 (비워두면 InventoryController에서 자동으로 가져옴)")]
     public Sprite resultIcon;
     
     [Header("재료")]
     [Tooltip("제작에 필요한 재료 목록")]
     public CraftingIngredient[] ingredients;
     
-    [Header("제작 조건")]
-    [Tooltip("제작 가능 여부 (false면 레시피 목록에서 숨김)")]
-    public bool isUnlocked = true;
+    // 슬롯 위치는 CraftingManager의 allRecipes 리스트 순서대로 자동 배치됨
+    // (왼쪽 위부터 오른쪽으로, 끝나면 다음 줄)
     
     /// <summary>
     /// 재료 정보를 문자열로 반환 (툴팁용)
@@ -52,7 +49,7 @@ public class CraftingRecipe : ScriptableObject {
         
         string result = "";
         for (int i = 0; i < ingredients.Length; i++) {
-            if (i > 0) result += ", ";
+            if (i > 0) result += "\n";
             string displayName = string.IsNullOrEmpty(ingredients[i].displayName) 
                 ? ingredients[i].itemType 
                 : ingredients[i].displayName;

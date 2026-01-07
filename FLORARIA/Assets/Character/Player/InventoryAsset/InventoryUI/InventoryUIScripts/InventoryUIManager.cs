@@ -448,7 +448,11 @@ namespace InventorySystem
         public void SetPressed(GameObject slot, bool overRide = false)
         {
             Slot slotInstance = slot.GetComponent<Slot>();
+            if (slotInstance == null) return; // Slot 컴포넌트가 없으면 리턴
+            
             InventoryItem item = slotInstance.GetItem();
+            if (item == null) return; // item이 null이면 리턴
+            
             if (item.GetPressable() && clickable || item.GetIsNull() && clickable || item.GetPressable() && overRide || overRide && item.GetIsNull())
             {
                 if (previouslyHighlighted != null)

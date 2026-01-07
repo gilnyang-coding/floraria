@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using InventorySystem;
 
 public class PlayerController : MonoBehaviour {
     [Header("Raycast Settings")]
@@ -44,12 +45,19 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void HandleInput() {
+        // 인벤토리가 열려있으면 (Time.timeScale == 0) 입력 무시
+        if (Time.timeScale == 0f) return;
+        
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) {
             SetTargetPosition();
         }
 
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) {
-            UseSkill(1); 
+            // 선택된 슬롯에 무기가 있는지 확인
+            if (!TryUseSelectedWeapon()) {
+                // 무기가 없으면 기본 공격
+                UseSkill(1); 
+            }
         }
 
         if (Keyboard.current != null) { //여러 스킬이 들어올 예정이라 if를 두 개로 나눔.
@@ -59,6 +67,28 @@ public class PlayerController : MonoBehaviour {
                 }
             }
         }
+    }
+    
+    /// <summary>
+    /// 선택된 슬롯의 무기 사용 시도
+    /// </summary>
+    /// <returns>무기를 사용했으면 true, 아니면 false</returns>
+    private bool TryUseSelectedWeapon() {
+        if (SlotSelectionManager.Instance == null) return false;
+        
+        InventoryItem selectedItem = SlotSelectionManager.Instance.GetSelectedItem();
+        if (selectedItem == null || selectedItem.GetIsNull()) return false;
+        
+        // 아이템의 RelatedGameObject에서 IWeapon 인터페이스 확인
+        GameObject relatedObj = selectedItem.GetRelatedGameObject();
+        if (relatedObj == null) return false;
+        
+        IWeapon weapon = relatedObj.GetComponent<IWeapon>();
+        if (weapon == null) return false;
+        
+        // 무기 공격 실행
+        weapon.Attack(gameObject);
+        return true;
     }
 
     private void SetTargetPosition() {

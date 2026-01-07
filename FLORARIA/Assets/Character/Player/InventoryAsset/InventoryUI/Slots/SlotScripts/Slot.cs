@@ -9,7 +9,7 @@ namespace InventorySystem
     /// <summary>
     /// This class creates a slot gameObject that displays an image of the item when notified by the assigned inventory
     /// </summary>
-    public class Slot : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
+    public class Slot : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private int position;//The position if the inventories items list
@@ -62,6 +62,13 @@ namespace InventorySystem
         /// </summary>
         public void UpdateSlot()
         {
+            // CraftTable은 CraftingManager에서 직접 아이콘을 관리하므로 건너뜀
+            string inventoryName = inventoryUIManager.GetInventoryName();
+            if (inventoryName == "CraftTable")
+            {
+                return; // CraftTable은 UpdateSlot 무시
+            }
+            
             item = inventoryUIManager.GetInventoryItem(position);
             if (item != null)
             {
@@ -106,10 +113,24 @@ namespace InventorySystem
             SlotItemHolder.SetActive(false);
         }
         /// <summary>
-        /// Adds a new slotchild when slot child is dragged away, and resets the slot to empty
+        /// 슬롯 클릭 처리
         /// </summary>
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (inventoryUIManager == null) return; // inventoryUIManager가 null이면 리턴
+            
+            // CraftTable인 경우 제작 실행
+            string inventoryName = inventoryUIManager.GetInventoryName();
+            if (inventoryName == "CraftTable" && CraftingManager.Instance != null)
+            {
+                if (eventData.button == PointerEventData.InputButton.Left)
+                {
+                    CraftingManager.Instance.OnSlotClicked(position);
+                }
+                return; // CraftTable은 일반 슬롯 동작 안 함
+            }
+            
+            // 일반 인벤토리 동작
             inventoryUIManager.SetPressed(gameObject);
             inventoryUIManager.MoveOnPress(gameObject);
         }
@@ -123,14 +144,45 @@ namespace InventorySystem
             // 좌클릭만 처리
             if (eventData.button != PointerEventData.InputButton.Left) return;
             
+            // CraftTable은 길게 누르기 동작 안 함
+            string inventoryName = inventoryUIManager.GetInventoryName();
+            if (inventoryName == "CraftTable") return;
+            
             // 아이템이 있는 경우에만 사용 시도
             if (item != null && !item.GetIsNull())
             {
                 if (ItemUsageManager.Instance != null)
                 {
-                    string inventoryName = inventoryUIManager.GetInventoryName();
                     ItemUsageManager.Instance.UseItemFromSlot(item, inventoryName);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// 마우스 진입 시 - CraftTable이면 툴팁 표시
+        /// </summary>
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (inventoryUIManager == null) return; // inventoryUIManager가 null이면 리턴
+            
+            string inventoryName = inventoryUIManager.GetInventoryName();
+            if (inventoryName == "CraftTable" && CraftingManager.Instance != null)
+            {
+                CraftingManager.Instance.ShowTooltip(position, transform.position);
+            }
+        }
+        
+        /// <summary>
+        /// 마우스 나갈 때 - 툴팁 숨김
+        /// </summary>
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (inventoryUIManager == null) return; // inventoryUIManager가 null이면 리턴
+            
+            string inventoryName = inventoryUIManager.GetInventoryName();
+            if (inventoryName == "CraftTable" && CraftingManager.Instance != null)
+            {
+                CraftingManager.Instance.HideTooltip();
             }
         }
         public void SetTextSize(float size)
