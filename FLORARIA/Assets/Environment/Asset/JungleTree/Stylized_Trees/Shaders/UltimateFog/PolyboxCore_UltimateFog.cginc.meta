@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 325b5d9d65c59e14ab7b76e01974d8d6
+ShaderIncludeImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 287761
+  packageName: Stylized Trees
+  packageVersion: 1.0
+  assetPath: Assets/POLYBOX/Stylized_Trees/Shaders/UltimateFog/PolyboxCore_UltimateFog.cginc
+  uploadId: 671242

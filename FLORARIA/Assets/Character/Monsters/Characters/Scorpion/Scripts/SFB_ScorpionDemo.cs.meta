@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: db2bcc04e3b3b4f0cb28e3825d29d8ce
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 221887
+  packageName: Low Poly Monster Bundle 2 - 19 Character Packs! - Fantasy RPG
+  packageVersion: 4.3.2
+  assetPath: Assets/InfinityPBR - Magic Pig Games/Characters/Scorpion/Scripts/SFB_ScorpionDemo.cs
+  uploadId: 738089
