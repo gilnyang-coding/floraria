@@ -473,5 +473,39 @@ public class CraftingManager : MonoBehaviour {
         return slotRecipes.ContainsKey(slotIndex) ? slotRecipes[slotIndex] : null;
     }
     
+    /// <summary>
+    /// 특정 슬롯의 아이콘을 다시 설정 (Slot.UpdateSlot에서 호출)
+    /// </summary>
+    public void RefreshSlotIcon(int slotIndex, Slot slot = null) {
+        if (!slotRecipes.ContainsKey(slotIndex)) return;
+        
+        CraftingRecipe recipe = slotRecipes[slotIndex];
+        
+        // Slot이 직접 전달되면 사용, 없으면 찾기
+        if (slot == null) {
+            if (craftTableUI == null) return;
+            
+            var slots = craftTableUI.GetComponentsInChildren<Slot>();
+            foreach (var s in slots) {
+                if (s.GetPosition() == slotIndex) {
+                    slot = s;
+                    break;
+                }
+            }
+        }
+        
+        if (slot != null) {
+            SetupSlotIconDirect(recipe, slot);
+        }
+    }
+    
+    /// <summary>
+    /// 레시피 아이콘 가져오기 (public)
+    /// </summary>
+    public Sprite GetRecipeIconForSlot(int slotIndex) {
+        if (!slotRecipes.ContainsKey(slotIndex)) return null;
+        return GetRecipeIcon(slotRecipes[slotIndex]);
+    }
+    
     public List<CraftingRecipe> AllRecipes => allRecipes;
 }

@@ -49,10 +49,19 @@ namespace InventorySystem
         /// </summary>
         private void Start()
         {
-            SlotItemHolder.SetActive(true);
-
             item = inventoryUIManager.GetInventoryItem(position);
             initialSlotChildPosition = SlotItemHolder.transform.position;
+            
+            // CraftTable은 CraftingManager에서 직접 아이콘을 관리하므로 초기에는 비활성화
+            string inventoryName = inventoryUIManager.GetInventoryName();
+            if (inventoryName == "CraftTable")
+            {
+                SlotItemHolder.SetActive(false);
+            }
+            else
+            {
+                SlotItemHolder.SetActive(true);
+            }
 
             UpdateSlot();
 
@@ -62,10 +71,25 @@ namespace InventorySystem
         /// </summary>
         public void UpdateSlot()
         {
-            // CraftTable은 CraftingManager에서 직접 아이콘을 관리하므로 건너뜀
+            // CraftTable은 CraftingManager에서 직접 아이콘을 관리
             string inventoryName = inventoryUIManager.GetInventoryName();
             if (inventoryName == "CraftTable")
             {
+                // CraftTable인 경우: 각 슬롯을 검사해서 레시피가 있으면 아이콘 활성화, 없으면 비활성화
+                if (CraftingManager.Instance != null)
+                {
+                    // CraftingManager에 이 슬롯에 대한 레시피가 있는지 확인
+                    var recipe = CraftingManager.Instance.GetRecipeBySlot(position);
+                    if (recipe != null)
+                    {
+                        // 레시피가 있으면 아이콘 설정 및 활성화
+                        CraftingManager.Instance.RefreshSlotIcon(position, this);
+                        return;
+                    }
+                }
+                
+                // 레시피가 없으면 SlotItemHolder 비활성화
+                SlotItemHolder.SetActive(false);
                 return; // CraftTable은 UpdateSlot 무시
             }
             
@@ -80,15 +104,8 @@ namespace InventorySystem
                     SlotItemHolder.GetComponent<Image>().sprite = item.GetItemImage();
                     SlotItemHolder.SetActive(true);
                     
-                    // Furnace 출력 슬롯(인덱스 1)의 드래그 비활성화
-                    if (inventoryName == "Furnace" && position == 1)
-                    {
-                        dragItem.enabled = false;
-                    }
-                    else
-                    {
-                        dragItem.enabled = true;
-                    }
+                    // Furnace는 모든 슬롯에서 드래그 가능 (입력/출력 모두 빼낼 수 있음)
+                    dragItem.enabled = true;
                 }
                 else
                 {
@@ -127,16 +144,16 @@ namespace InventorySystem
         /// </summary>
         public void OnPointerClick(PointerEventData eventData)
         {
+            // 우클릭은 무시
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+            
             if (inventoryUIManager == null) return; // inventoryUIManager가 null이면 리턴
             
             // CraftTable인 경우 제작 실행
             string inventoryName = inventoryUIManager.GetInventoryName();
             if (inventoryName == "CraftTable" && CraftingManager.Instance != null)
             {
-                if (eventData.button == PointerEventData.InputButton.Left)
-                {
-                    CraftingManager.Instance.OnSlotClicked(position);
-                }
+                CraftingManager.Instance.OnSlotClicked(position);
                 return; // CraftTable은 일반 슬롯 동작 안 함
             }
             

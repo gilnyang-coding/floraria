@@ -491,23 +491,44 @@ public void AllignDictionaries() {
         /// <summary>
         /// called by <see cref="Update"/> to check if a user given keyinput has been pressed, and if so disable/enable the inventory. 
         /// </summary>
-/// <summary>
+    /// <summary>
     /// E 키는 토글(열기/닫기), ESC 키는 오직 닫기 전용으로 동작하도록 수정된 로직입니다.
     /// </summary>
 private void ToggleOnKeyInput() {
-    if (Keyboard.current == null) return;
+if (Keyboard.current == null) return;
 
     // 1. E 키가 눌리는지 확인
     if (Keyboard.current.eKey.wasPressedThisFrame) {
-        Debug.Log("'E' 키 입력 감지됨"); // <-- 로그 추가
+        // 용광로나 제작대가 열려있으면 E키 처리를 건너뜀 (용광로/제작대에서 처리)
+        if (IsFurnaceOrCraftTableOpen()) {
+            return;
+        }
         ExecuteKeyAction("e", true);
     }
 
     // 2. ESC 키가 눌리는지 확인
     if (Keyboard.current.escapeKey.wasPressedThisFrame) {
-        Debug.Log("'ESC' 키 입력 감지됨"); // <-- 로그 추가
         ExecuteKeyAction("escape", false);
     }
+}
+
+/// <summary>
+/// 용광로나 제작대가 열려있는지 확인
+/// </summary>
+private bool IsFurnaceOrCraftTableOpen() {
+    // FurnaceInteractable 확인
+    FurnaceInteractable furnace = FindObjectOfType<FurnaceInteractable>();
+    if (furnace != null && furnace.IsFurnaceOpen()) {
+        return true;
+    }
+    
+    // CraftTableInteractable 확인
+    CraftTableInteractable craftTable = FindObjectOfType<CraftTableInteractable>();
+    if (craftTable != null && craftTable.IsCraftTableOpen()) {
+        return true;
+    }
+    
+    return false;
 }
 
 private void ExecuteKeyAction(string key, bool canOpen) {

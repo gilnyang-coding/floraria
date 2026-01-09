@@ -897,6 +897,11 @@ namespace InventorySystem
         public void UpdateSlot(int location) {
             if (positionToSlotDict != null && positionToSlotDict.ContainsKey(location)) {
                 positionToSlotDict[location].GetComponent<Slot>().UpdateSlot();
+                
+                // Furnace 인벤토리인 경우 FurnaceManager에 슬롯 변경 알림
+                if (inventoryName == "Furnace" && FurnaceManager.Instance != null) {
+                    FurnaceManager.Instance.OnSlotUpdated(location);
+                }
             }
         }
 

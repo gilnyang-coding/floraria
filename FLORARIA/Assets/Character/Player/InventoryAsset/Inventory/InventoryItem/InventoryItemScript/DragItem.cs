@@ -176,6 +176,20 @@ namespace InventorySystem
             bool slotNull = slot.GetItem().GetIsNull();
             bool itemStackable = !slot.GetItem().GetIsNull() && (slot.GetItem().GetItemType() == item.GetItemType()) && (slot.GetItem().GetAmount() + item.GetAmount()) <= slot.GetItem().GetItemStackAmount();
             bool itemAcceptedInInventory = slot.GetInventoryUI().GetInventory().CheckAcceptance(item.GetItemType());
+            
+            // Furnace 입력 슬롯 체크: 레시피에 등록된 아이템만 넣을 수 있음
+            string inventoryName = slot.GetInventoryUI().GetInventoryName();
+            if (inventoryName == "Furnace" && FurnaceManager.Instance != null) {
+                int slotPosition = slot.GetPosition();
+                if (slotPosition == FurnaceManager.Instance.GetInputSlotIndex()) {
+                    // 입력 슬롯에 드롭 시도
+                    if (!FurnaceManager.Instance.CanAcceptItemInInputSlot(item.GetItemType())) {
+                        // 레시피에 등록되지 않은 아이템
+                        HandleInvalidPlacement(true);
+                        return;
+                    }
+                }
+            }
 
             if ((slotNull || itemStackable) && itemAcceptedInInventory)
             {

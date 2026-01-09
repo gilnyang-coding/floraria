@@ -60,10 +60,9 @@ public class FurnaceInteractable : BaseInteractable {
                 return;
             }
             
-            // ESC, F, E키로 닫기
+            // ESC, F키로 닫기 (E키는 아무 동작도 하지 않음)
             if (Keyboard.current != null) {
                 if (Keyboard.current.escapeKey.wasPressedThisFrame || 
-                    Keyboard.current.eKey.wasPressedThisFrame ||
                     (isPlayerInRange && Keyboard.current.fKey.wasPressedThisFrame)) {
                     CloseFurnace();
                     return;

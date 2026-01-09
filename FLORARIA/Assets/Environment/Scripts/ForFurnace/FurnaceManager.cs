@@ -1,6 +1,7 @@
 using InventorySystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,11 +21,11 @@ public class FurnaceManager : MonoBehaviour {
     [SerializeField] private float smeltingTime = 3f;
     
     [Header("슬롯 설정")]
-    [Tooltip("입력 슬롯 인덱스 (위쪽 슬롯)")]
-    [SerializeField] private int inputSlotIndex = 0;
+    [Tooltip("입력 슬롯 인덱스 (아래쪽 슬롯)")]
+    [SerializeField] private int inputSlotIndex = 1;
     
-    [Tooltip("출력 슬롯 인덱스 (아래쪽 슬롯)")]
-    [SerializeField] private int outputSlotIndex = 1;
+    [Tooltip("출력 슬롯 인덱스 (위쪽 슬롯)")]
+    [SerializeField] private int outputSlotIndex = 0;
     
     [Header("레시피 설정")]
     [Tooltip("용광로에서 사용할 모든 레시피")]
@@ -77,7 +78,6 @@ public class FurnaceManager : MonoBehaviour {
             furnaceInventory = InventoryController.instance.GetInventory(furnaceInventoryName);
             if (furnaceInventory != null) {
                 furnaceUI = furnaceInventory.GetUI();
-                Debug.Log($"[FurnaceManager] {furnaceInventoryName} 인벤토리 연결됨");
             } else {
                 Debug.LogError($"[FurnaceManager] {furnaceInventoryName} 인벤토리가 null입니다.");
                 // 재시도
@@ -99,18 +99,32 @@ public class FurnaceManager : MonoBehaviour {
             }
         }
         
-        // 출력 슬롯 드래그 방지 설정
-        SetupOutputSlot();
+        // 초기 슬롯 상태 저장
+        lastInputItem = furnaceInventory.InventoryGetItem(inputSlotIndex);
+        lastOutputItem = furnaceInventory.InventoryGetItem(outputSlotIndex);
         
         // 슬롯 모니터링 시작
         slotMonitorCoroutine = StartCoroutine(MonitorSlots());
         
         isInitialized = true;
-        Debug.Log($"[FurnaceManager] 초기화 완료. 레시피 수: {recipeDict.Count}");
     }
     
     /// <summary>
-    /// 슬롯 변경 감지 모니터링
+    /// 입력 슬롯에 아이템을 넣을 수 있는지 확인 (레시피에 등록된 아이템만)
+    /// </summary>
+    public bool CanAcceptItemInInputSlot(string itemType) {
+        return recipeDict.ContainsKey(itemType);
+    }
+    
+    /// <summary>
+    /// 입력 슬롯 인덱스 가져오기 (DragItem에서 사용)
+    /// </summary>
+    public int GetInputSlotIndex() {
+        return inputSlotIndex;
+    }
+    
+    /// <summary>
+    /// 슬롯 변경 감지 모니터링 (더 빠른 감지)
     /// </summary>
     private IEnumerator MonitorSlots() {
         while (true) {
@@ -120,58 +134,65 @@ public class FurnaceManager : MonoBehaviour {
             
             // 입력 슬롯 체크
             InventoryItem currentInputItem = furnaceInventory.InventoryGetItem(inputSlotIndex);
-            if (currentInputItem != lastInputItem) {
+            bool inputChanged = false;
+            
+            // null 체크
+            if (currentInputItem == null) {
+                if (lastInputItem != null) {
+                    inputChanged = true;
+                }
+            } else if (lastInputItem == null) {
+                inputChanged = true;
+            } else {
+                // 둘 다 null이 아닌 경우
+                bool currentIsNull = currentInputItem.GetIsNull();
+                bool lastIsNull = lastInputItem.GetIsNull();
+                
+                if (currentIsNull != lastIsNull) {
+                    inputChanged = true;
+                } else if (!currentIsNull && !lastIsNull) {
+                    // 둘 다 아이템이 있는 경우 타입 비교
+                    if (currentInputItem.GetItemType() != lastInputItem.GetItemType()) {
+                        inputChanged = true;
+                    }
+                }
+            }
+            
+            if (inputChanged) {
                 lastInputItem = currentInputItem;
                 OnInputSlotChanged();
             }
             
             // 출력 슬롯 체크
             InventoryItem currentOutputItem = furnaceInventory.InventoryGetItem(outputSlotIndex);
-            if (currentOutputItem != lastOutputItem) {
+            bool outputChanged = false;
+            
+            if (currentOutputItem == null) {
+                if (lastOutputItem != null) {
+                    outputChanged = true;
+                }
+            } else if (lastOutputItem == null) {
+                outputChanged = true;
+            } else {
+                bool currentIsNull = currentOutputItem.GetIsNull();
+                bool lastIsNull = lastOutputItem.GetIsNull();
+                
+                if (currentIsNull != lastIsNull) {
+                    outputChanged = true;
+                } else if (!currentIsNull && !lastIsNull) {
+                    if (currentOutputItem.GetItemType() != lastOutputItem.GetItemType()) {
+                        outputChanged = true;
+                    }
+                }
+            }
+            
+            if (outputChanged) {
                 lastOutputItem = currentOutputItem;
                 OnOutputSlotChanged();
             }
         }
     }
     
-    /// <summary>
-    /// 출력 슬롯 드래그 방지 설정
-    /// </summary>
-    private void SetupOutputSlot() {
-        if (furnaceUI == null) return;
-        
-        Slot outputSlot = GetSlotByIndex(outputSlotIndex);
-        if (outputSlot != null) {
-            // 출력 슬롯에 특별한 태그나 컴포넌트 추가하여 드래그 방지
-            // 실제로는 슬롯 업데이트 시마다 체크하여 드래그를 막음
-            StartCoroutine(MonitorOutputSlot());
-        }
-    }
-    
-    /// <summary>
-    /// 출력 슬롯 모니터링 (드래그 방지)
-    /// </summary>
-    private IEnumerator MonitorOutputSlot() {
-        while (true) {
-            yield return new WaitForSeconds(0.05f);
-            
-            Slot outputSlot = GetSlotByIndex(outputSlotIndex);
-            if (outputSlot != null) {
-                var itemHolder = outputSlot.transform.Find("SlotItemHolder");
-                if (itemHolder == null && outputSlot.transform.childCount > 0) {
-                    itemHolder = outputSlot.transform.GetChild(0);
-                }
-                
-                if (itemHolder != null && itemHolder.gameObject.activeSelf) {
-                    var dragItem = itemHolder.GetComponent<DragItem>();
-                    if (dragItem != null && dragItem.enabled) {
-                        // 출력 슬롯의 드래그 비활성화
-                        dragItem.enabled = false;
-                    }
-                }
-            }
-        }
-    }
     
     /// <summary>
     /// 슬롯 인덱스로 Slot 컴포넌트 찾기
@@ -189,26 +210,49 @@ public class FurnaceManager : MonoBehaviour {
     }
     
     /// <summary>
+    /// 슬롯 업데이트 시 호출 (InventoryUIManager에서 호출)
+    /// </summary>
+    public void OnSlotUpdated(int slotIndex) {
+        if (!isInitialized) return;
+        
+        if (slotIndex == inputSlotIndex) {
+            // 입력 슬롯 변경
+            OnInputSlotChanged();
+        } else if (slotIndex == outputSlotIndex) {
+            // 출력 슬롯 변경
+            OnOutputSlotChanged();
+        }
+    }
+    
+    /// <summary>
     /// 입력 슬롯 아이템 변경 감지 및 녹이기 시작
     /// </summary>
     public void OnInputSlotChanged() {
-        if (!isInitialized || isSmelting) return;
+        if (!isInitialized) return;
+        
+        if (isSmelting) return;
         
         InventoryItem inputItem = furnaceInventory.InventoryGetItem(inputSlotIndex);
         if (inputItem == null || inputItem.GetIsNull()) {
+            // 입력 슬롯이 비워지면 녹이기 중단
+            if (isSmelting && smeltingCoroutine != null) {
+                StopCoroutine(smeltingCoroutine);
+                isSmelting = false;
+                if (progressBar != null) {
+                    progressBar.fillAmount = 0f;
+                }
+            }
             return;
         }
         
         string itemType = inputItem.GetItemType();
         if (!recipeDict.ContainsKey(itemType)) {
-            Debug.Log($"[FurnaceManager] {itemType}에 대한 레시피가 없습니다.");
             return;
         }
         
         // 출력 슬롯이 비어있는지 확인
         InventoryItem outputItem = furnaceInventory.InventoryGetItem(outputSlotIndex);
         if (outputItem != null && !outputItem.GetIsNull()) {
-            Debug.Log("[FurnaceManager] 출력 슬롯이 비어있지 않습니다.");
             return;
         }
         
@@ -228,12 +272,14 @@ public class FurnaceManager : MonoBehaviour {
     
     /// <summary>
     /// 녹이기 코루틴 (3초 대기 후 변환)
+    /// Time.timeScale에 영향받지 않도록 Time.unscaledDeltaTime 사용
     /// </summary>
     private IEnumerator SmeltingCoroutine(FurnaceRecipe recipe) {
         float elapsed = 0f;
         
         while (elapsed < smeltingTime) {
-            elapsed += Time.deltaTime;
+            // Time.timeScale에 영향받지 않는 실제 시간 사용
+            elapsed += Time.unscaledDeltaTime;
             float progress = elapsed / smeltingTime;
             
             // 진행 바 업데이트
@@ -247,6 +293,10 @@ public class FurnaceManager : MonoBehaviour {
         // 입력 아이템 소모
         if (InventoryController.instance != null) {
             InventoryController.instance.RemoveItemPos(furnaceInventoryName, inputSlotIndex, 1);
+        } else {
+            Debug.LogError("[FurnaceManager] InventoryController.instance가 null입니다!");
+            isSmelting = false;
+            yield break;
         }
         
         // 출력 아이템 추가
@@ -258,17 +308,79 @@ public class FurnaceManager : MonoBehaviour {
         }
         
         isSmelting = false;
-        Debug.Log($"[FurnaceManager] {recipe.outputDisplayName} 제작 완료!");
     }
     
     /// <summary>
     /// 출력 슬롯에 아이템 추가
     /// </summary>
     private void AddOutputItem(FurnaceRecipe recipe) {
-        if (InventoryController.instance == null) return;
+        if (InventoryController.instance == null) {
+            Debug.LogError("[FurnaceManager] InventoryController.instance가 null입니다.");
+            return;
+        }
         
-        // 출력 슬롯에 직접 추가
-        InventoryController.instance.AddItemPos(furnaceInventoryName, recipe.outputItemType, outputSlotIndex, recipe.outputAmount);
+        if (string.IsNullOrEmpty(recipe.outputItemType)) {
+            Debug.LogError($"[FurnaceManager] 레시피의 outputItemType이 비어있습니다. 레시피: {recipe.name}");
+            return;
+        }
+        
+        // 출력 슬롯이 비어있는지 다시 확인
+        InventoryItem currentOutput = furnaceInventory.InventoryGetItem(outputSlotIndex);
+        if (currentOutput != null && !currentOutput.GetIsNull()) {
+            return;
+        }
+        
+        // TestItemDict 확인 (아이템이 등록되어 있는지 확인)
+        MethodInfo testItemDictMethod = typeof(InventoryController).GetMethod("TestItemDict", BindingFlags.NonPublic | BindingFlags.Instance);
+        bool itemExists = false;
+        if (testItemDictMethod != null) {
+            itemExists = (bool)testItemDictMethod.Invoke(InventoryController.instance, new object[] { recipe.outputItemType });
+        }
+        
+        bool success = false;
+        
+        // 방법 1: InventoryController.AddItemPos(string, string, int, int) 사용
+        if (itemExists) {
+            try {
+                InventoryController.instance.AddItemPos(furnaceInventoryName, recipe.outputItemType, outputSlotIndex, recipe.outputAmount);
+                success = true;
+            } catch (System.Exception e) {
+                Debug.LogError($"[FurnaceManager] AddItemPos 예외 발생: {e.Message}");
+            }
+        }
+        
+        // 방법 2: itemManager에서 직접 InventoryItem을 가져와서 추가 (방법 1이 실패한 경우)
+        if (!success) {
+            try {
+                // 리플렉션으로 itemManager 접근
+                FieldInfo itemManagerField = typeof(InventoryController).GetField("itemManager", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (itemManagerField != null) {
+                    Dictionary<string, InventoryItem> itemManager = itemManagerField.GetValue(InventoryController.instance) as Dictionary<string, InventoryItem>;
+                    
+                    if (itemManager != null && itemManager.ContainsKey(recipe.outputItemType)) {
+                        // itemManager에서 InventoryItem 가져오기
+                        InventoryItem templateItem = itemManager[recipe.outputItemType];
+                        InventoryItem newItem = new InventoryItem(templateItem, recipe.outputAmount);
+                        
+                        // InventoryController.AddItemPos(string, InventoryItem, int) 사용
+                        InventoryController.instance.AddItemPos(furnaceInventoryName, newItem, outputSlotIndex);
+                        success = true;
+                    } else {
+                        Debug.LogError($"[FurnaceManager] itemManager에 '{recipe.outputItemType}' 아이템이 없습니다.");
+                    }
+                }
+            } catch (System.Exception e) {
+                Debug.LogError($"[FurnaceManager] 리플렉션을 통한 아이템 추가 실패: {e.Message}");
+            }
+        }
+        
+        // UI 업데이트 강제 호출 (AddItemPos 후 즉시 반영)
+        if (success && furnaceUI != null) {
+            InventoryUIManager uiManager = furnaceUI.GetComponent<InventoryUIManager>();
+            if (uiManager != null) {
+                uiManager.UpdateSlot(outputSlotIndex);
+            }
+        }
     }
     
     /// <summary>
@@ -306,4 +418,5 @@ public class FurnaceManager : MonoBehaviour {
     public List<FurnaceRecipe> GetAllRecipes() {
         return new List<FurnaceRecipe>(allRecipes);
     }
+    
 }
