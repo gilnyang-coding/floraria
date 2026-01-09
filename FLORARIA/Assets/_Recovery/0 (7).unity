@@ -5978,7 +5978,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9010612053373607407, guid: 0c13b9c31fd059b468b2f1759c412e61, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -24.44
+      value: -8.493681
       objectReference: {fileID: 0}
     - target: {fileID: 9010612053373607407, guid: 0c13b9c31fd059b468b2f1759c412e61, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5986,7 +5986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9010612053373607407, guid: 0c13b9c31fd059b468b2f1759c412e61, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 34.79
+      value: 35.413097
       objectReference: {fileID: 0}
     - target: {fileID: 9010612053373607407, guid: 0c13b9c31fd059b468b2f1759c412e61, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6726,7 +6726,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2684312175388576324, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -15.428957
       objectReference: {fileID: 0}
     - target: {fileID: 2684312175388576324, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10619,7 +10619,6 @@ MonoBehaviour:
   unavailableColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   tooltipOffset: {x: 30, y: -30}
   ingredientsTextOffset: {x: 0, y: -300}
-  margin: 0
 --- !u!224 &773827639
 RectTransform:
   m_ObjectHideFlags: 0
@@ -23503,7 +23502,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.143336
+      value: -13.379479
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -23511,19 +23510,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 32.4646
+      value: 32.338394
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.38720116
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.92199534
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalRotation.z
@@ -23535,7 +23534,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 225.561
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3641365518989165764, guid: d994f828183a71944b4eecc3dfa6261f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -25348,8 +25347,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 250
-  m_fontSizeBase: 250
+  m_fontSize: 300
+  m_fontSizeBase: 300
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -26474,63 +26473,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138481484}
   m_CullTransparentMesh: 1
---- !u!1001 &950260981316707554
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4385002093674258091, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_Name
-      value: SilverBar
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -16.351
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.61060464
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 35.878
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.96920556
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.24625342
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 28.512
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a272a146955813c4fbca100bc635334f, type: 3}
 --- !u!4 &3038737671296193940
 Transform:
   m_ObjectHideFlags: 0
@@ -26562,7 +26504,7 @@ MonoBehaviour:
   iUnderstandTheSetup: 1
   UI: {fileID: 2006850776}
   items:
-  - itemType: Branch
+  - itemType: branch
     itemImage: {fileID: 21300120, guid: bb76618f4bae74c83b9d6654d0b2a47e, type: 3}
     maxStackAmount: 64
     displayItemAmount: 1
@@ -26628,18 +26570,19 @@ MonoBehaviour:
     RelatedGameObject: {fileID: 3317823749142253822, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
     itemAction:
       m_PersistentCalls:
-        m_Calls: []
-    isNull: 0
-  - itemType: SilverBar
-    itemImage: {fileID: 21300000, guid: 9122e6219f4bbc742b44e936a10dc85e, type: 3}
-    maxStackAmount: 64
-    displayItemAmount: 1
-    draggable: 1
-    pressable: 0
-    RelatedGameObject: {fileID: 4385002093674258091, guid: a272a146955813c4fbca100bc635334f, type: 3}
-    itemAction:
-      m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 8125194249976161385, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+          m_TargetAssemblyTypeName: AppleItem, Assembly-CSharp
+          m_MethodName: UseFromInventory
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     isNull: 0
   initializeInventory:
   - inventoryName: Hotbar
@@ -27072,7 +27015,6 @@ SceneRoots:
   - {fileID: 316336139}
   - {fileID: 1910962865}
   - {fileID: 424369369}
-  - {fileID: 950260981316707554}
   - {fileID: 3038737671296193940}
   - {fileID: 2006850776}
   - {fileID: 2024020063}

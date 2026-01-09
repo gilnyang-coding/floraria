@@ -22,10 +22,20 @@ public class CraftingTooltip : MonoBehaviour {
     [Header("위치 설정")]
     [SerializeField] private Vector2 tooltipOffset = new Vector2(30f, -30f); // 툴팁 전체의 마우스로부터의 오프셋
     [SerializeField] private Vector2 ingredientsTextOffset = new Vector2(0f, -25f); // 재료 텍스트의 제목으로부터의 오프셋 (X: 좌우, Y: 위아래, 음수면 아래)
+    [SerializeField] private float margin = 50f; // 툴팁 크기의 여유 공간 (픽셀)
+    
+    // 타이틀의 초기 위치 (margin 적용 전)
+    private Vector3? titleInitialPosition = null;
     
     private void Awake() {
         if (tooltipRect == null) tooltipRect = GetComponent<RectTransform>();
         if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
+        
+        // RectTransform 설정: anchor와 pivot을 top-left로 설정하여 sizeDelta가 정확히 작동하도록
+        SetupRectTransform();
+        
+        // Layout 컴포넌트 비활성화 (크기 자동 조정 방해 방지)
+        DisableLayoutComponents();
         
         // 레이캐스트 차단 방지 (깜빡거림 방지)
         if (canvasGroup != null) {
@@ -46,6 +56,44 @@ public class CraftingTooltip : MonoBehaviour {
         }
         
         Hide();
+    }
+    
+    /// <summary>
+    /// RectTransform을 크기 조정에 적합하도록 설정
+    /// </summary>
+    private void SetupRectTransform() {
+        if (tooltipRect == null) return;
+        
+        // Anchor를 top-left로 설정 (anchorMin과 anchorMax가 같으면 sizeDelta가 실제 크기가 됨)
+        // 이렇게 하면 sizeDelta가 절대 크기로 작동합니다
+        tooltipRect.anchorMin = new Vector2(0f, 1f);
+        tooltipRect.anchorMax = new Vector2(0f, 1f);
+        tooltipRect.pivot = new Vector2(0f, 1f); // pivot도 top-left로 설정
+        
+        // anchoredPosition 초기화 (anchor가 변경되면 위치가 바뀔 수 있으므로)
+        // 크기는 UpdateTooltipSize()에서 설정하므로 여기서는 초기화만
+        if (tooltipRect.sizeDelta.x <= 0 || tooltipRect.sizeDelta.y <= 0) {
+            tooltipRect.sizeDelta = new Vector2(200f, 100f); // 임시 크기
+        }
+    }
+    
+    /// <summary>
+    /// Layout 컴포넌트 비활성화 (크기 자동 조정 방해 방지)
+    /// </summary>
+    private void DisableLayoutComponents() {
+        if (tooltipRect == null) return;
+        
+        // ContentSizeFitter 비활성화
+        ContentSizeFitter fitter = tooltipRect.GetComponent<ContentSizeFitter>();
+        if (fitter != null) {
+            fitter.enabled = false;
+        }
+        
+        // LayoutElement의 preferred size 설정 무시
+        LayoutElement layoutElement = tooltipRect.GetComponent<LayoutElement>();
+        if (layoutElement != null) {
+            layoutElement.ignoreLayout = true;
+        }
     }
     
     private void Update() {
@@ -75,6 +123,9 @@ public class CraftingTooltip : MonoBehaviour {
         gameObject.SetActive(true);
         if (canvasGroup != null) canvasGroup.alpha = 1f;
         
+        // RectTransform 설정을 확실히 적용 (Inspector 설정이 덮어쓸 수 있으므로)
+        SetupRectTransform();
+        
         // 제목 설정 (제작 가능 여부에 따라 색상 적용)
         if (titleText != null) {
             string title = string.IsNullOrEmpty(recipe.resultDisplayName) 
@@ -95,7 +146,13 @@ public class CraftingTooltip : MonoBehaviour {
             ingredientsText.text = BuildIngredientsText(recipe);
         }
         
-        // 재료 텍스트 위치를 제목 기준으로 설정
+        // 재료 텍스트 위치를 제목 기준으로 먼저 설정 (크기 계산을 위해)
+        UpdateIngredientsTextPosition();
+        
+        // 텍스트 크기 계산 후 툴팁 크기 조정
+        UpdateTooltipSize();
+        
+        // 크기 조정 후 위치 다시 설정 (크기가 바뀌었을 수 있으므로)
         UpdateIngredientsTextPosition();
         
         // 위치 설정 (마우스 위치 기준)
@@ -130,6 +187,78 @@ public class CraftingTooltip : MonoBehaviour {
         }
         
         return result.ToString();
+    }
+    
+    /// <summary>
+    /// 툴팁 크기를 타이틀과 재료 텍스트에 맞춰 자동 조정
+    /// </summary>
+    private void UpdateTooltipSize() {
+        if (tooltipRect == null || titleText == null || ingredientsText == null) return;
+        
+        // RectTransform 설정이 올바른지 확인 (매번 확인하여 Inspector 설정이 덮어쓰는 것을 방지)
+        if (tooltipRect.anchorMin != new Vector2(0f, 1f) || tooltipRect.anchorMax != new Vector2(0f, 1f)) {
+            SetupRectTransform();
+        }
+        
+        // 텍스트 렌더링 강제 업데이트 (크기 계산을 위해)
+        Canvas.ForceUpdateCanvases();
+        
+        // 타이틀 텍스트의 실제 크기
+        float titleWidth = titleText.preferredWidth;
+        float titleHeight = titleText.preferredHeight;
+        
+        // 재료 텍스트의 실제 크기
+        float ingredientsWidth = ingredientsText.preferredWidth;
+        float ingredientsHeight = ingredientsText.preferredHeight;
+        
+        // 두 텍스트의 위치를 고려하여 전체 크기 계산
+        RectTransform titleRect = titleText.rectTransform;
+        RectTransform ingredientsRect = ingredientsText.rectTransform;
+        
+        // 타이틀의 위치 (로컬 좌표 기준, pivot 고려)
+        Vector2 titlePos = titleRect.anchoredPosition;
+        Vector2 titlePivot = titleRect.pivot;
+        
+        // 재료 텍스트의 위치 (로컬 좌표 기준, 아직 설정되지 않았을 수 있으므로 계산)
+        Vector2 ingredientsPos = new Vector2(
+            titlePos.x + ingredientsTextOffset.x,
+            titlePos.y + ingredientsTextOffset.y
+        );
+        Vector2 ingredientsPivot = ingredientsRect.pivot;
+        
+        // 텍스트의 실제 bounds 계산 (pivot 고려)
+        // 타이틀 bounds
+        float titleLeft = titlePos.x - (titleWidth * titlePivot.x);
+        float titleRight = titlePos.x + (titleWidth * (1f - titlePivot.x));
+        float titleTop = titlePos.y + (titleHeight * (1f - titlePivot.y));
+        float titleBottom = titlePos.y - (titleHeight * titlePivot.y);
+        
+        // 재료 텍스트 bounds
+        float ingredientsLeft = ingredientsPos.x - (ingredientsWidth * ingredientsPivot.x);
+        float ingredientsRight = ingredientsPos.x + (ingredientsWidth * (1f - ingredientsPivot.x));
+        float ingredientsTop = ingredientsPos.y + (ingredientsHeight * (1f - ingredientsPivot.y));
+        float ingredientsBottom = ingredientsPos.y - (ingredientsHeight * ingredientsPivot.y);
+        
+        // 전체 bounds 계산
+        float minX = Mathf.Min(titleLeft, ingredientsLeft);
+        float maxX = Mathf.Max(titleRight, ingredientsRight);
+        float minY = Mathf.Min(titleBottom, ingredientsBottom);
+        float maxY = Mathf.Max(titleTop, ingredientsTop);
+        
+        // 전체 크기 계산 (위아래 30px, 좌우 20px 여유 공간 추가)
+        float totalWidth = (maxX - minX) + 200f; // 좌우 각각 20px = 40px
+        float totalHeight = (maxY - minY) + 140f; // 위아래 각각 30px = 60px
+        
+        // 최소 크기 보장
+        totalWidth = Mathf.Max(totalWidth, 100f);
+        totalHeight = Mathf.Max(totalHeight, 50f);
+        
+        // 툴팁 크기 업데이트 (SetSizeWithCurrentAnchors 사용)
+        tooltipRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, totalWidth);
+        tooltipRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalHeight);
+        
+        // 디버그 로그
+        Debug.Log($"[CraftingTooltip] 크기 업데이트: {totalWidth}x{totalHeight}");
     }
     
     /// <summary>

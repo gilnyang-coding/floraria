@@ -10351,6 +10351,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765532673}
   m_CullTransparentMesh: 1
+--- !u!1001 &769568661
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -16.351
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.61060464
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 35.878
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.96920556
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.24625342
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 28.512
+      objectReference: {fileID: 0}
+    - target: {fileID: -6410360524387984880, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2899704392125410718, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
+      propertyPath: m_Name
+      value: Silver
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: -4161369568681901532, guid: ce75b3361f57aee46b3caf7e8ea31c10, type: 3}
 --- !u!1 &771846782
 GameObject:
   m_ObjectHideFlags: 0
@@ -26474,63 +26531,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138481484}
   m_CullTransparentMesh: 1
---- !u!1001 &950260981316707554
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4385002093674258091, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_Name
-      value: SilverBar
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -16.351
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.61060464
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 35.878
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.96920556
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.24625342
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 28.512
-      objectReference: {fileID: 0}
-    - target: {fileID: 7636946049967547601, guid: a272a146955813c4fbca100bc635334f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a272a146955813c4fbca100bc635334f, type: 3}
 --- !u!4 &3038737671296193940
 Transform:
   m_ObjectHideFlags: 0
@@ -26562,7 +26562,7 @@ MonoBehaviour:
   iUnderstandTheSetup: 1
   UI: {fileID: 2006850776}
   items:
-  - itemType: Branch
+  - itemType: branch
     itemImage: {fileID: 21300120, guid: bb76618f4bae74c83b9d6654d0b2a47e, type: 3}
     maxStackAmount: 64
     displayItemAmount: 1
@@ -26630,16 +26630,28 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     isNull: 0
-  - itemType: SilverBar
-    itemImage: {fileID: 21300000, guid: 9122e6219f4bbc742b44e936a10dc85e, type: 3}
+  - itemType: WoodBow
+    itemImage: {fileID: 21300000, guid: c6b96b87adbd25343b9079d963ffb637, type: 3}
     maxStackAmount: 64
     displayItemAmount: 1
     draggable: 1
     pressable: 0
-    RelatedGameObject: {fileID: 4385002093674258091, guid: a272a146955813c4fbca100bc635334f, type: 3}
+    RelatedGameObject: {fileID: 3317823749142253822, guid: d4958227484245e4592c41ab2c02ad22, type: 3}
     itemAction:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 8125194249976161385, guid: cd71e48862ae6264dbb53424a2f74026, type: 3}
+          m_TargetAssemblyTypeName: AppleItem, Assembly-CSharp
+          m_MethodName: UseFromInventory
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     isNull: 0
   initializeInventory:
   - inventoryName: Hotbar
@@ -27072,10 +27084,10 @@ SceneRoots:
   - {fileID: 316336139}
   - {fileID: 1910962865}
   - {fileID: 424369369}
-  - {fileID: 950260981316707554}
   - {fileID: 3038737671296193940}
   - {fileID: 2006850776}
   - {fileID: 2024020063}
   - {fileID: 844497902}
   - {fileID: 1205370189}
   - {fileID: 149916688}
+  - {fileID: 769568661}
