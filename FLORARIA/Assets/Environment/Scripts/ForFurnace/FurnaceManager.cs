@@ -60,13 +60,15 @@ public class FurnaceManager : MonoBehaviour {
     }
     
     private void Start() {
-        // 약간의 딜레이 후 초기화
-        Invoke(nameof(Initialize), 0.1f);
+        // 약간의 딜레이 후 초기화 (InventoryController 초기화 대기)
+        Invoke(nameof(Initialize), 0.2f);
     }
     
     private void Initialize() {
         if (InventoryController.instance == null) {
             Debug.LogError("[FurnaceManager] InventoryController를 찾을 수 없습니다.");
+            // 재시도
+            Invoke(nameof(Initialize), 0.5f);
             return;
         }
         
@@ -76,9 +78,17 @@ public class FurnaceManager : MonoBehaviour {
             if (furnaceInventory != null) {
                 furnaceUI = furnaceInventory.GetUI();
                 Debug.Log($"[FurnaceManager] {furnaceInventoryName} 인벤토리 연결됨");
+            } else {
+                Debug.LogError($"[FurnaceManager] {furnaceInventoryName} 인벤토리가 null입니다.");
+                // 재시도
+                Invoke(nameof(Initialize), 0.5f);
+                return;
             }
-        } catch {
-            Debug.LogError($"[FurnaceManager] {furnaceInventoryName} 인벤토리를 찾을 수 없습니다.");
+        } catch (System.Exception e) {
+            Debug.LogError($"[FurnaceManager] {furnaceInventoryName} 인벤토리를 찾을 수 없습니다. 오류: {e.Message}");
+            Debug.LogWarning($"[FurnaceManager] InventoryController에 '{furnaceInventoryName}' 인벤토리가 등록되어 있는지 확인하세요.");
+            // 재시도
+            Invoke(nameof(Initialize), 0.5f);
             return;
         }
         

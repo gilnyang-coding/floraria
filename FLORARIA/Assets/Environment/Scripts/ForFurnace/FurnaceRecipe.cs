@@ -4,7 +4,7 @@ using UnityEngine;
 /// 용광로 레시피 ScriptableObject
 /// 입력 아이템(광석)을 출력 아이템(주괴)로 변환
 /// </summary>
-[CreateAssetMenu(fileName = "New Furnace Recipe", menuName = "Crafting/Furnace Recipe")]
+[CreateAssetMenu(fileName = "New Furnace Recipe", menuName = "Furnace/Furnace Recipe")]
 public class FurnaceRecipe : ScriptableObject {
     [Header("입력 아이템")]
     [Tooltip("녹일 수 있는 아이템 타입 (InventoryController의 items에 등록된 이름)")]
