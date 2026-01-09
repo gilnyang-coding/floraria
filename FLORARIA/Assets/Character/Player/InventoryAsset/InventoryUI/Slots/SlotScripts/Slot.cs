@@ -79,6 +79,16 @@ namespace InventorySystem
                     dragItem.SetText();
                     SlotItemHolder.GetComponent<Image>().sprite = item.GetItemImage();
                     SlotItemHolder.SetActive(true);
+                    
+                    // Furnace 출력 슬롯(인덱스 1)의 드래그 비활성화
+                    if (inventoryName == "Furnace" && position == 1)
+                    {
+                        dragItem.enabled = false;
+                    }
+                    else
+                    {
+                        dragItem.enabled = true;
+                    }
                 }
                 else
                 {
