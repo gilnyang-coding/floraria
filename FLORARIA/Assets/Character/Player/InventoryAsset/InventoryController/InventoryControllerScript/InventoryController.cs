@@ -513,7 +513,7 @@ if (Keyboard.current == null) return;
 }
 
 /// <summary>
-/// 용광로나 제작대가 열려있는지 확인
+/// 용광로나 제작대, 화로가 열려있는지 확인
 /// </summary>
 private bool IsFurnaceOrCraftTableOpen() {
     // FurnaceInteractable 확인
@@ -525,6 +525,12 @@ private bool IsFurnaceOrCraftTableOpen() {
     // CraftTableInteractable 확인
     CraftTableInteractable craftTable = FindObjectOfType<CraftTableInteractable>();
     if (craftTable != null && craftTable.IsCraftTableOpen()) {
+        return true;
+    }
+    
+    // FirePotInteractable 확인
+    FirePotInteractable firePot = FindObjectOfType<FirePotInteractable>();
+    if (firePot != null && firePot.IsFirePotOpen()) {
         return true;
     }
     

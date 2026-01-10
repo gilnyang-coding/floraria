@@ -52,9 +52,9 @@ namespace InventorySystem
             item = inventoryUIManager.GetInventoryItem(position);
             initialSlotChildPosition = SlotItemHolder.transform.position;
             
-            // CraftTable은 CraftingManager에서 직접 아이콘을 관리하므로 초기에는 비활성화
+            // CraftTable과 FirePot은 각각의 Manager에서 직접 아이콘을 관리하므로 초기에는 비활성화
             string inventoryName = inventoryUIManager.GetInventoryName();
-            if (inventoryName == "CraftTable")
+            if (inventoryName == "CraftTable" || inventoryName == "FirePot")
             {
                 SlotItemHolder.SetActive(false);
             }
@@ -71,7 +71,7 @@ namespace InventorySystem
         /// </summary>
         public void UpdateSlot()
         {
-            // CraftTable은 CraftingManager에서 직접 아이콘을 관리
+            // CraftTable과 FirePot은 각각의 Manager에서 직접 아이콘을 관리
             string inventoryName = inventoryUIManager.GetInventoryName();
             if (inventoryName == "CraftTable")
             {
@@ -91,6 +91,25 @@ namespace InventorySystem
                 // 레시피가 없으면 SlotItemHolder 비활성화
                 SlotItemHolder.SetActive(false);
                 return; // CraftTable은 UpdateSlot 무시
+            }
+            else if (inventoryName == "FirePot")
+            {
+                // FirePot인 경우: 각 슬롯을 검사해서 레시피가 있으면 아이콘 활성화, 없으면 비활성화
+                if (FirePotManager.Instance != null)
+                {
+                    // FirePotManager에 이 슬롯에 대한 레시피가 있는지 확인
+                    var recipe = FirePotManager.Instance.GetRecipeBySlot(position);
+                    if (recipe != null)
+                    {
+                        // 레시피가 있으면 아이콘 설정 및 활성화
+                        FirePotManager.Instance.RefreshSlotIcon(position, this);
+                        return;
+                    }
+                }
+                
+                // 레시피가 없으면 SlotItemHolder 비활성화
+                SlotItemHolder.SetActive(false);
+                return; // FirePot은 UpdateSlot 무시
             }
             
             item = inventoryUIManager.GetInventoryItem(position);
@@ -149,12 +168,17 @@ namespace InventorySystem
             
             if (inventoryUIManager == null) return; // inventoryUIManager가 null이면 리턴
             
-            // CraftTable인 경우 제작 실행
+            // CraftTable과 FirePot인 경우 제작 실행
             string inventoryName = inventoryUIManager.GetInventoryName();
             if (inventoryName == "CraftTable" && CraftingManager.Instance != null)
             {
                 CraftingManager.Instance.OnSlotClicked(position);
                 return; // CraftTable은 일반 슬롯 동작 안 함
+            }
+            else if (inventoryName == "FirePot" && FirePotManager.Instance != null)
+            {
+                FirePotManager.Instance.OnSlotClicked(position);
+                return; // FirePot은 일반 슬롯 동작 안 함
             }
             
             // 일반 인벤토리 동작
@@ -171,9 +195,9 @@ namespace InventorySystem
             // 좌클릭만 처리
             if (eventData.button != PointerEventData.InputButton.Left) return;
             
-            // CraftTable은 길게 누르기 동작 안 함
+            // CraftTable과 FirePot은 길게 누르기 동작 안 함
             string inventoryName = inventoryUIManager.GetInventoryName();
-            if (inventoryName == "CraftTable") return;
+            if (inventoryName == "CraftTable" || inventoryName == "FirePot") return;
             
             // 아이템이 있는 경우에만 사용 시도
             if (item != null && !item.GetIsNull())
@@ -197,6 +221,10 @@ namespace InventorySystem
             {
                 CraftingManager.Instance.ShowTooltip(position, transform.position);
             }
+            else if (inventoryName == "FirePot" && FirePotManager.Instance != null)
+            {
+                FirePotManager.Instance.ShowTooltip(position, transform.position);
+            }
         }
         
         /// <summary>
@@ -210,6 +238,10 @@ namespace InventorySystem
             if (inventoryName == "CraftTable" && CraftingManager.Instance != null)
             {
                 CraftingManager.Instance.HideTooltip();
+            }
+            else if (inventoryName == "FirePot" && FirePotManager.Instance != null)
+            {
+                FirePotManager.Instance.HideTooltip();
             }
         }
         public void SetTextSize(float size)
