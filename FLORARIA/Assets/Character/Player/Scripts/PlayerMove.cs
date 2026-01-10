@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerMove : MonoBehaviour {
     [SerializeField] private float walkSpeed = 1f;
@@ -8,6 +9,10 @@ public class PlayerMove : MonoBehaviour {
     private Animator animator;
     private Hydration hydration;
     private bool isMoving = false;
+    
+    // 일시적인 속도 배율 (디버프/버프용)
+    private float temporarySpeedMultiplier = 1f;
+    private Coroutine speedMultiplierCoroutine;
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
@@ -17,7 +22,7 @@ public class PlayerMove : MonoBehaviour {
     }
 
     /// <summary>
-    /// 현재 실제 이동속도 (수분 상태 반영)
+    /// 현재 실제 이동속도 (수분 상태 및 일시적 배율 반영)
     /// </summary>
     private float CurrentSpeed {
         get {
@@ -26,8 +31,38 @@ public class PlayerMove : MonoBehaviour {
             if (hydration != null) {
                 speed *= hydration.SpeedMultiplier;
             }
+            // 일시적인 속도 배율 적용
+            speed *= temporarySpeedMultiplier;
             return speed;
         }
+    }
+    
+    /// <summary>
+    /// 일시적인 속도 배율 추가 (디버프/버프용)
+    /// </summary>
+    /// <param name="multiplier">속도 배율 (예: 0.8 = 20% 감소)</param>
+    /// <param name="duration">지속 시간 (초)</param>
+    public void AddSpeedMultiplier(float multiplier, float duration) {
+        // 기존 코루틴이 있으면 중지
+        if (speedMultiplierCoroutine != null) {
+            StopCoroutine(speedMultiplierCoroutine);
+        }
+        
+        // 배율 적용
+        temporarySpeedMultiplier = multiplier;
+        
+        // 일정 시간 후 원래대로 복구
+        speedMultiplierCoroutine = StartCoroutine(ResetSpeedMultiplierAfterDelay(duration));
+    }
+    
+    /// <summary>
+    /// 일정 시간 후 속도 배율을 원래대로 복구
+    /// </summary>
+    private IEnumerator ResetSpeedMultiplierAfterDelay(float delay) {
+        yield return new WaitForSeconds(delay);
+        temporarySpeedMultiplier = 1f;
+        speedMultiplierCoroutine = null;
+        Debug.Log("[PlayerMove] 일시적 속도 배율이 원래대로 복구되었습니다.");
     }
 
     public void MoveTo(Vector3 targetPos) {
