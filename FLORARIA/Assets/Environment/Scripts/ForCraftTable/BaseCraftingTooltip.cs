@@ -19,7 +19,6 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     [SerializeField] protected Color unavailableColor = new Color(0.9f, 0.2f, 0.2f); // 빨간색
     
     [Header("위치 설정")]
-    [SerializeField] protected Vector2 tooltipOffset = new Vector2(30f, -30f); // 툴팁 전체의 마우스로부터의 오프셋
     [SerializeField] protected Vector2 ingredientsTextOffset = new Vector2(0f, -25f); // 재료 텍스트의 제목으로부터의 오프셋 (X: 좌우, Y: 위아래, 음수면 아래)
     [SerializeField] protected float margin = 50f; // 툴팁 크기의 여유 공간 (픽셀)
     
@@ -96,10 +95,7 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     }
     
     protected virtual void Update() {
-        // 툴팁이 활성화되어 있으면 마우스 위치에 따라 업데이트
-        if (gameObject.activeSelf && canvasGroup != null && canvasGroup.alpha > 0f) {
-            UpdatePosition();
-        }
+        // 마우스 위치 추적 로직 제거됨
     }
     
     /// <summary>
@@ -154,8 +150,10 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
         // 크기 조정 후 위치 다시 설정 (크기가 바뀌었을 수 있으므로)
         UpdateIngredientsTextPosition();
         
-        // 위치 설정 (마우스 위치 기준)
-        UpdatePosition();
+        // 전달받은 position 파라미터로 위치 설정
+        if (tooltipRect != null) {
+            tooltipRect.position = position;
+        }
     }
     
     /// <summary>
@@ -274,40 +272,6 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
         );
     }
     
-    /// <summary>
-    /// 툴팁 위치 업데이트 (마우스 위치 기준)
-    /// </summary>
-    protected virtual void UpdatePosition() {
-        if (tooltipRect == null) return;
-        
-        // 마우스 위치를 화면 좌표로 변환
-        Vector3 mousePos = Input.mousePosition;
-        Vector2 size = tooltipRect.sizeDelta;
-        
-        // 기본 위치: 마우스 오른쪽 아래
-        Vector3 pos = mousePos;
-        pos.x += tooltipOffset.x;
-        pos.y += tooltipOffset.y;
-        
-        // 화면 밖으로 나가지 않도록 조정
-        if (pos.x + size.x > Screen.width) {
-            // 오른쪽이 넘치면 왼쪽에 배치
-            pos.x = mousePos.x - size.x - tooltipOffset.x;
-        }
-        if (pos.y - size.y < 0) {
-            // 아래가 넘치면 위에 배치
-            pos.y = mousePos.y + size.y - tooltipOffset.y;
-        }
-        
-        // 최소 여백 보장
-        pos.x = Mathf.Clamp(pos.x, 10f, Screen.width - size.x - 10f);
-        pos.y = Mathf.Clamp(pos.y, size.y + 10f, Screen.height - 10f);
-        
-        tooltipRect.position = pos;
-        
-        // 재료 텍스트 위치도 다시 업데이트 (툴팁이 움직였으므로)
-        UpdateIngredientsTextPosition();
-    }
     
     /// <summary>
     /// 툴팁 숨기기
