@@ -14,15 +14,30 @@ public class CraftTableInteractable : BaseInteractable {
     [Tooltip("제작대 인벤토리 이름 (InventoryController에 등록된 이름)")]
     [SerializeField] private string craftTableName = "CraftTable";
     
+    [Header("Required Item Settings")]
+    [Tooltip("제작대 사용에 필요한 아이템 이름 (비어있으면 필요 없음)")]
+    [SerializeField] private string requiredItemName = "";
+    
+    [Header("Message Icon Settings")]
+    [Tooltip("필수 아이템이 없을 때 표시할 메시지 아이콘 (3초간 표시)")]
+    [SerializeField] private GameObject messageIcon;
+    
     private GameObject craftTableUI;
     private GameObject playerInventoryUI;
     private bool isCraftTableOpen = false;
+    private bool isShowingMessage = false;
+    private float messageTimer = 0f;
     
     protected override void Start() {
         base.Start();
         
         // CraftTable UI 찾기 (약간의 딜레이 후)
         Invoke(nameof(FindCraftTableUI), 0.2f);
+        
+        // 메시지 아이콘 초기화
+        if (messageIcon != null) {
+            messageIcon.SetActive(false);
+        }
     }
     
     private void FindCraftTableUI() {
@@ -52,6 +67,23 @@ public class CraftTableInteractable : BaseInteractable {
     }
     
     protected override void Update() {
+        // 메시지 아이콘 타이머 업데이트 및 빌보드 처리
+        if (isShowingMessage && messageIcon != null && isPlayerInRange && Camera.main != null) {
+            messageTimer -= Time.deltaTime;
+            if (messageTimer <= 0f) {
+                HideMessageIcon();
+            } else {
+                // 메시지 아이콘 빌보드 처리
+                Vector3 iconPosition = transform.position + Vector3.up * iconHeight;
+                messageIcon.transform.position = iconPosition;
+                
+                Vector3 directionToCamera = Camera.main.transform.position - iconPosition;
+                if (directionToCamera != Vector3.zero) {
+                    messageIcon.transform.rotation = Quaternion.LookRotation(directionToCamera);
+                }
+            }
+        }
+        
         // 제작대가 열려있을 때
         if (isCraftTableOpen) {
             // E키나 ESC키로 PlayerInventory가 닫히면 CraftTable도 닫기
@@ -98,8 +130,71 @@ public class CraftTableInteractable : BaseInteractable {
         if (isCraftTableOpen) {
             CloseCraftTable();
         } else {
+            // 필수 아이템이 설정되어 있고, 플레이어가 그 아이템을 들고 있지 않으면 메시지 표시
+            if (!string.IsNullOrEmpty(requiredItemName) && !HasRequiredItem()) {
+                ShowMessageIcon();
+                return;
+            }
+            
             OpenCraftTable();
         }
+    }
+    
+    /// <summary>
+    /// 플레이어가 필수 아이템을 들고 있는지 확인
+    /// </summary>
+    private bool HasRequiredItem() {
+        if (SlotSelectionManager.Instance == null) {
+            Debug.LogWarning("[CraftTableInteractable] SlotSelectionManager를 찾을 수 없습니다.");
+            return false;
+        }
+        
+        InventoryItem selectedItem = SlotSelectionManager.Instance.GetSelectedItem();
+        if (selectedItem == null || selectedItem.GetIsNull()) {
+            return false;
+        }
+        
+        // 현재 선택된 아이템의 타입이 필수 아이템 이름과 일치하는지 확인
+        return selectedItem.GetItemType() == requiredItemName;
+    }
+    
+    /// <summary>
+    /// 메시지 아이콘 표시 (3초간)
+    /// </summary>
+    private void ShowMessageIcon() {
+        if (messageIcon == null) {
+            Debug.LogWarning("[CraftTableInteractable] 메시지 아이콘이 설정되지 않았습니다.");
+            return;
+        }
+        
+        // 기본 상호작용 아이콘 숨기기
+        if (interactionIcon != null) {
+            interactionIcon.SetActive(false);
+        }
+        
+        // 메시지 아이콘 표시
+        messageIcon.SetActive(true);
+        isShowingMessage = true;
+        messageTimer = 3f;
+        
+        Debug.Log($"[CraftTableInteractable] {requiredItemName} 아이템이 필요합니다.");
+    }
+    
+    /// <summary>
+    /// 메시지 아이콘 숨기기
+    /// </summary>
+    private void HideMessageIcon() {
+        if (messageIcon != null) {
+            messageIcon.SetActive(false);
+        }
+        
+        // 기본 상호작용 아이콘 다시 표시
+        if (interactionIcon != null && isPlayerInRange) {
+            interactionIcon.SetActive(true);
+        }
+        
+        isShowingMessage = false;
+        messageTimer = 0f;
     }
     
     /// <summary>
@@ -183,13 +278,18 @@ public class CraftTableInteractable : BaseInteractable {
     }
     
     /// <summary>
-    /// 플레이어가 범위를 벗어나면 제작대 닫기
+    /// 플레이어가 범위를 벗어나면 제작대 닫기 및 메시지 아이콘 숨기기
     /// </summary>
     public override void OnTriggerExit(Collider other) {
         base.OnTriggerExit(other);
         
-        if (other.CompareTag("Player") && isCraftTableOpen) {
-            CloseCraftTable();
+        if (other.CompareTag("Player")) {
+            if (isCraftTableOpen) {
+                CloseCraftTable();
+            }
+            
+            // 메시지 아이콘도 숨기기
+            HideMessageIcon();
         }
     }
     
