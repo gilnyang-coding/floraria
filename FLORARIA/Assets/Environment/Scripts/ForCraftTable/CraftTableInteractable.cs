@@ -68,12 +68,12 @@ public class CraftTableInteractable : BaseInteractable {
     
     protected override void Update() {
         // 메시지 아이콘 타이머 업데이트 및 빌보드 처리
-        if (isShowingMessage && messageIcon != null && isPlayerInRange && Camera.main != null) {
+        if (isShowingMessage && messageIcon != null) {
             messageTimer -= Time.deltaTime;
             if (messageTimer <= 0f) {
                 HideMessageIcon();
-            } else {
-                // 메시지 아이콘 빌보드 처리
+            } else if (isPlayerInRange && Camera.main != null) {
+                // 메시지 아이콘 빌보드 처리 (매 프레임 업데이트)
                 Vector3 iconPosition = transform.position + Vector3.up * iconHeight;
                 messageIcon.transform.position = iconPosition;
                 
@@ -170,6 +170,18 @@ public class CraftTableInteractable : BaseInteractable {
         // 기본 상호작용 아이콘 숨기기
         if (interactionIcon != null) {
             interactionIcon.SetActive(false);
+        }
+        
+        // 메시지 아이콘 위치 설정 (상호작용 아이콘과 같은 위치)
+        if (Camera.main != null) {
+            Vector3 iconPosition = transform.position + Vector3.up * iconHeight;
+            messageIcon.transform.position = iconPosition;
+            
+            // 빌보드 처리
+            Vector3 directionToCamera = Camera.main.transform.position - iconPosition;
+            if (directionToCamera != Vector3.zero) {
+                messageIcon.transform.rotation = Quaternion.LookRotation(directionToCamera);
+            }
         }
         
         // 메시지 아이콘 표시
