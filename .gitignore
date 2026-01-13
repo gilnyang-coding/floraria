@@ -6,6 +6,8 @@
 /[Logs]/
 /[UserSettings]/
 /[MemoryCaptures]/
+**/_Recovery/
+FLORARIA/Assets/_Recovery/
 .vs/
 .gradle/
 ExportedObj/
