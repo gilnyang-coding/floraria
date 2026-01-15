@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: 58f7e79a87c79824597746e8c1bfe400
 DefaultImporter:
   externalObjects: {}
@@ -12,3 +13,6 @@ AssetOrigin:
   packageVersion: 1.24
   assetPath: Assets/SimpleNaturePack/SimpleNaturePack_2020.3_HDRP_v1.24.unitypackage
   uploadId: 582302
+=======
+guid: 58f7e79a87c79824597746e8c1bfe400
+>>>>>>> Stashed changes
