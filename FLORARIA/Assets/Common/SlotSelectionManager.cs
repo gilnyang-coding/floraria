@@ -11,7 +11,7 @@ public class SlotSelectionManager : MonoBehaviour {
     public static SlotSelectionManager Instance { get; private set; }
 
     [Header("Default Settings")]
-    [SerializeField] private string hotbarInventoryName = "Hotbar";
+    [SerializeField] private string hotbarInventoryName = InventoryNames.Hotbar;
     [SerializeField] private int defaultHotbarSlot = 0; // 기본 핫바 슬롯
     
     // 현재 선택된 슬롯 정보

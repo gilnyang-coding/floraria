@@ -113,7 +113,10 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     /// 툴팁 표시
     /// </summary>
     public virtual void Show(CraftingRecipe recipe, bool canCraft, Vector3 position, Dictionary<string, bool> ingredientAvailability) {
-        if (recipe == null) return;
+        if (recipe == null) {
+            Debug.LogWarning($"[{GetType().Name}] 레시피가 null입니다.");
+            return;
+        }
         
         gameObject.SetActive(true);
         if (canvasGroup != null) canvasGroup.alpha = 1f;
@@ -132,6 +135,8 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
                 : ColorUtility.ToHtmlStringRGB(unavailableColor);
             
             titleText.text = $"<color=#{colorHex}>{title}</color>";
+        } else {
+            Debug.LogWarning($"[{GetType().Name}] titleText가 할당되지 않았습니다.");
         }
         
         // 재료 텍스트 생성 (색상 적용)
@@ -139,6 +144,13 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
             ingredientsText.enableWordWrapping = false; // 줄바꿈 비활성화
             ingredientsText.overflowMode = TextOverflowModes.Overflow; // 넘치면 그냥 표시
             ingredientsText.text = BuildIngredientsText(recipe, ingredientAvailability);
+        } else {
+            if (ingredientsText == null) {
+                Debug.LogWarning($"[{GetType().Name}] ingredientsText가 할당되지 않았습니다.");
+            }
+            if (recipe.ingredients == null) {
+                Debug.LogWarning($"[{GetType().Name}] 레시피의 ingredients가 null입니다.");
+            }
         }
         
         // 재료 텍스트 위치를 제목 기준으로 먼저 설정 (크기 계산을 위해)

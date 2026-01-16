@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public class HotbarController : MonoBehaviour {
     [Header("Hotbar Settings")]
-    [SerializeField] private string hotbarInventoryName = "Hotbar";
+    [SerializeField] private string hotbarInventoryName = InventoryNames.Hotbar;
     [SerializeField] private int slotCount = 5;
     [SerializeField] private KeyCode useItemKey = KeyCode.H;
     

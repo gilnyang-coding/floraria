@@ -10,10 +10,10 @@ public abstract class BaseCraftingManager : MonoBehaviour {
     
     [Header("인벤토리 설정")]
     [Tooltip("플레이어 인벤토리 이름")]
-    [SerializeField] protected string playerInventoryName = "PlayerInventory";
+    [SerializeField] protected string playerInventoryName = InventoryNames.PlayerInventory;
     
     [Tooltip("핫바 인벤토리 이름")]
-    [SerializeField] protected string hotbarInventoryName = "Hotbar";
+    [SerializeField] protected string hotbarInventoryName = InventoryNames.Hotbar;
     
     [Header("툴팁 설정")]
     [SerializeField] protected BaseCraftingTooltip tooltip;
@@ -466,9 +466,11 @@ public abstract class BaseCraftingManager : MonoBehaviour {
         if (tooltip is BaseCraftingTooltip baseTooltip) {
             baseTooltip.Show(recipe, canCraft, position, availability);
         } else {
-            // 호환성을 위한 폴백 (CraftingTooltip의 Show 메서드)
+            // 호환성을 위한 폴백 (CraftingTooltip, AlchemyTooltip의 Show 메서드)
             if (tooltip is CraftingTooltip craftingTooltip) {
                 craftingTooltip.Show(recipe, canCraft, position);
+            } else if (tooltip is AlchemyTooltip alchemyTooltip) {
+                alchemyTooltip.Show(recipe, canCraft, position);
             }
         }
     }
