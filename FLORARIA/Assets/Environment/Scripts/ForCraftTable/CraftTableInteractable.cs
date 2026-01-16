@@ -27,6 +27,7 @@ public class CraftTableInteractable : BaseInteractable {
     private bool isCraftTableOpen = false;
     private bool isShowingMessage = false;
     private float messageTimer = 0f;
+    private bool hasConsumedRequiredItem = false; // 필수 아이템을 한 번 소모했는지 추적
     
     protected override void Start() {
         base.Start();
@@ -144,6 +145,11 @@ public class CraftTableInteractable : BaseInteractable {
     /// 플레이어가 필수 아이템을 들고 있는지 확인
     /// </summary>
     private bool HasRequiredItem() {
+        // 이미 한 번 소모했다면 항상 true 반환
+        if (hasConsumedRequiredItem) {
+            return true;
+        }
+        
         if (SlotSelectionManager.Instance == null) {
             Debug.LogWarning("[CraftTableInteractable] SlotSelectionManager를 찾을 수 없습니다.");
             return false;
@@ -156,6 +162,38 @@ public class CraftTableInteractable : BaseInteractable {
         
         // 현재 선택된 아이템의 타입이 필수 아이템 이름과 일치하는지 확인
         return selectedItem.GetItemType() == requiredItemName;
+    }
+    
+    /// <summary>
+    /// 필수 아이템 소모 (선택된 아이템에서 1개 제거)
+    /// </summary>
+    private void ConsumeRequiredItem() {
+        if (SlotSelectionManager.Instance == null) {
+            Debug.LogWarning("[CraftTableInteractable] SlotSelectionManager를 찾을 수 없습니다.");
+            return;
+        }
+        
+        InventoryItem selectedItem = SlotSelectionManager.Instance.GetSelectedItem();
+        if (selectedItem == null || selectedItem.GetIsNull()) {
+            Debug.LogWarning("[CraftTableInteractable] 선택된 아이템이 없습니다.");
+            return;
+        }
+        
+        // 선택된 아이템의 인벤토리 이름과 위치 가져오기
+        string inventoryName = SlotSelectionManager.Instance.CurrentInventoryName;
+        int position = SlotSelectionManager.Instance.CurrentSlotIndex;
+        
+        if (string.IsNullOrEmpty(inventoryName) || position < 0) {
+            Debug.LogWarning("[CraftTableInteractable] 선택된 아이템의 인벤토리 정보를 가져올 수 없습니다.");
+            return;
+        } 
+        
+        // 아이템 1개 제거
+        if (InventoryController.instance != null) {
+            InventoryController.instance.RemoveItemPos(inventoryName, position, 1);
+            hasConsumedRequiredItem = true;
+            Debug.Log($"[CraftTableInteractable] {requiredItemName} 1개 소모됨");
+        }
     }
     
     /// <summary>
@@ -219,6 +257,11 @@ public class CraftTableInteractable : BaseInteractable {
                 Debug.LogWarning("[CraftTableInteractable] CraftTable UI를 찾을 수 없습니다.");
                 return;
             }
+        }
+        
+        // 필수 아이템이 설정되어 있고, 아직 소모하지 않았다면 소모
+        if (!string.IsNullOrEmpty(requiredItemName) && !hasConsumedRequiredItem && HasRequiredItem()) {
+            ConsumeRequiredItem();
         }
         
         // PlayerInventory를 먼저 열어야 InventoryStateEffect가 Time.timeScale을 처리함
