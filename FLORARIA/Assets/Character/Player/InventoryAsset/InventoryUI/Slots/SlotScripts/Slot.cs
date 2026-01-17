@@ -128,6 +128,24 @@ namespace InventorySystem
                     // 레시피가 없으면 SlotItemHolder 비활성화
                     SlotItemHolder.SetActive(false);
                     return; // AlchemyPot은 UpdateSlot 무시
+                    
+                case InventoryNames.BlackSmith:
+                    // BlackSmith인 경우: 각 슬롯을 검사해서 레시피가 있으면 아이콘 활성화, 없으면 비활성화
+                    if (BlackSmithManager.Instance != null)
+                    {
+                        // BlackSmithManager에 이 슬롯에 대한 레시피가 있는지 확인
+                        var recipe = BlackSmithManager.Instance.GetRecipeBySlot(position);
+                        if (recipe != null)
+                        {
+                            // 레시피가 있으면 아이콘 설정 및 활성화
+                            BlackSmithManager.Instance.RefreshSlotIcon(position, this);
+                            return;
+                        }
+                    }
+                    
+                    // 레시피가 없으면 SlotItemHolder 비활성화
+                    SlotItemHolder.SetActive(false);
+                    return; // BlackSmith은 UpdateSlot 무시
             }
             
             item = inventoryUIManager.GetInventoryItem(position);
@@ -213,6 +231,14 @@ namespace InventorySystem
                         return; // AlchemyPot은 일반 슬롯 동작 안 함
                     }
                     break;
+                    
+                case InventoryNames.BlackSmith:
+                    if (BlackSmithManager.Instance != null)
+                    {
+                        BlackSmithManager.Instance.OnSlotClicked(position);
+                        return; // BlackSmith은 일반 슬롯 동작 안 함
+                    }
+                    break;
             }
             
             // 일반 인벤토리 동작
@@ -229,9 +255,9 @@ namespace InventorySystem
             // 좌클릭만 처리
             if (eventData.button != PointerEventData.InputButton.Left) return;
             
-            // CraftTable, FirePot, AlchemyPot은 길게 누르기 동작 안 함
+            // CraftTable, FirePot, AlchemyPot, BlackSmith은 길게 누르기 동작 안 함
             string inventoryName = inventoryUIManager.GetInventoryName();
-            if (inventoryName == InventoryNames.CraftTable || inventoryName == InventoryNames.FirePot || inventoryName == InventoryNames.AlchemyPot) return;
+            if (inventoryName == InventoryNames.CraftTable || inventoryName == InventoryNames.FirePot || inventoryName == InventoryNames.AlchemyPot || inventoryName == InventoryNames.BlackSmith) return;
             
             // 아이템이 있는 경우에만 사용 시도
             if (item != null && !item.GetIsNull())

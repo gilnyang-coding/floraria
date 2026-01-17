@@ -22,6 +22,13 @@ public class BlackSmithInteractable : BaseInteractable {
     [Tooltip("필수 아이템이 없을 때 표시할 메시지 아이콘 (3초간 표시)")]
     [SerializeField] private GameObject messageIcon;
     
+    [Header("Icon Position Offset")]
+    [Tooltip("아이콘 X축 오프셋 (좌우 이동, 양수=오른쪽, 음수=왼쪽)")]
+    [SerializeField] private float iconOffsetX = 0f;
+    
+    [Tooltip("아이콘 Z축 오프셋 (앞뒤 이동, 양수=앞, 음수=뒤)")]
+    [SerializeField] private float iconOffsetZ = 2f;
+    
     private GameObject blackSmithUI;
     private GameObject playerInventoryUI;
     private bool isBlackSmithOpen = false;
@@ -68,14 +75,20 @@ public class BlackSmithInteractable : BaseInteractable {
     }
     
     protected override void Update() {
+        // 시간이 멈춰있으면(인벤토리가 켜져 있으면) 상호작용 로직을 무시함
+        if (Time.timeScale == 0f) return;
+
         // 메시지 아이콘 타이머 업데이트 및 빌보드 처리
         if (isShowingMessage && messageIcon != null) {
             messageTimer -= Time.deltaTime;
             if (messageTimer <= 0f) {
                 HideMessageIcon();
             } else if (isPlayerInRange && Camera.main != null) {
-                // 메시지 아이콘 빌보드 처리 (매 프레임 업데이트)
-                Vector3 iconPosition = transform.position + Vector3.up * iconHeight;
+                // 메시지 아이콘 빌보드 처리 (매 프레임 업데이트, X, Z 오프셋 적용)
+                Vector3 iconPosition = transform.position 
+                    + Vector3.up * iconHeight 
+                    + transform.right * iconOffsetX 
+                    + transform.forward * iconOffsetZ;
                 messageIcon.transform.position = iconPosition;
                 
                 Vector3 directionToCamera = Camera.main.transform.position - iconPosition;
@@ -103,8 +116,26 @@ public class BlackSmithInteractable : BaseInteractable {
             }
         }
         
-        // 기본 상호작용 로직 (F키로 열기)
-        base.Update();
+        // F키 상호작용 처리 (공방이 닫혀있을 때만)
+        if (!isBlackSmithOpen && isPlayerInRange && Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) {
+            OnInteract(playerRef);
+        }
+        
+        // 아이콘 위치 및 빌보드 처리 (X, Z 오프셋 적용)
+        if (isPlayerInRange && interactionIcon != null && Camera.main != null) {
+            // 아이콘 위치 설정 (Y축 높이 + X, Z 오프셋)
+            Vector3 iconPosition = transform.position 
+                + Vector3.up * iconHeight 
+                + transform.right * iconOffsetX 
+                + transform.forward * iconOffsetZ;
+            interactionIcon.transform.position = iconPosition;
+            
+            // 아이콘이 카메라를 바라보도록 설정
+            Vector3 directionToCamera = Camera.main.transform.position - iconPosition;
+            if (directionToCamera != Vector3.zero) {
+                interactionIcon.transform.rotation = Quaternion.LookRotation(directionToCamera);
+            }
+        }
     }
     
     /// <summary>
@@ -210,9 +241,12 @@ public class BlackSmithInteractable : BaseInteractable {
             interactionIcon.SetActive(false);
         }
         
-        // 메시지 아이콘 위치 설정 (상호작용 아이콘과 같은 위치)
+        // 메시지 아이콘 위치 설정 (상호작용 아이콘과 같은 위치, X, Z 오프셋 적용)
         if (Camera.main != null) {
-            Vector3 iconPosition = transform.position + Vector3.up * iconHeight;
+            Vector3 iconPosition = transform.position 
+                + Vector3.up * iconHeight 
+                + transform.right * iconOffsetX 
+                + transform.forward * iconOffsetZ;
             messageIcon.transform.position = iconPosition;
             
             // 빌보드 처리
