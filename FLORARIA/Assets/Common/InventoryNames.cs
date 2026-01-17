@@ -8,6 +8,7 @@ public static class InventoryNames {
     public const string FirePot = "FirePot";
     public const string AlchemyPot = "AlchemyPot";
     public const string Furnace = "Furnace";
+    public const string BlackSmith = "BlackSmith";
     
     // 플레이어 인벤토리
     public const string PlayerInventory = "PlayerInventory";

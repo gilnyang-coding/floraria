@@ -273,6 +273,13 @@ namespace InventorySystem
                         AlchemyManager.Instance.ShowTooltip(position, transform.position);
                     }
                     break;
+                    
+                case InventoryNames.BlackSmith:
+                    if (BlackSmithManager.Instance != null)
+                    {
+                        BlackSmithManager.Instance.ShowTooltip(position, transform.position);
+                    }
+                    break;
             }
         }
         
@@ -304,6 +311,13 @@ namespace InventorySystem
                     if (AlchemyManager.Instance != null)
                     {
                         AlchemyManager.Instance.HideTooltip();
+                    }
+                    break;
+                    
+                case InventoryNames.BlackSmith:
+                    if (BlackSmithManager.Instance != null)
+                    {
+                        BlackSmithManager.Instance.HideTooltip();
                     }
                     break;
             }
