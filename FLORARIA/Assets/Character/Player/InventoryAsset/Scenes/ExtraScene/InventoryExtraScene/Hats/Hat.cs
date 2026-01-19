@@ -11,9 +11,9 @@ namespace InventorySampleScene
         {
             if (collision.gameObject.name == "Player")
             {
-                if (!InventoryController.instance.InventoryFull("Hotbar", hatName))
+                if (!InventoryController.instance.InventoryFull(InventoryNames.Hotbar, hatName))
                 {
-                    InventoryController.instance.AddItem("Hotbar", hatName);
+                    InventoryController.instance.AddItem(InventoryNames.Hotbar, hatName);
                     Destroy(gameObject);
 
                 }

@@ -50,7 +50,7 @@ namespace InventorySampleScene
         }
         public void ClearHotBar()
         {
-            InventoryController.instance.InventoryClear("HotBar");
+            InventoryController.instance.InventoryClear(InventoryNames.Hotbar);
         }
         public void swap(InventoryItem item1, InventoryItem inSlot)
         {

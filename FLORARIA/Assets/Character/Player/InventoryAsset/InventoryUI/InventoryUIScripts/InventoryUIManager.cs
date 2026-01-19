@@ -899,7 +899,7 @@ namespace InventorySystem
                 positionToSlotDict[location].GetComponent<Slot>().UpdateSlot();
                 
                 // Furnace 인벤토리인 경우 FurnaceManager에 슬롯 변경 알림
-                if (inventoryName == "Furnace" && FurnaceManager.Instance != null) {
+                if (inventoryName == InventoryNames.Furnace && FurnaceManager.Instance != null) {
                     FurnaceManager.Instance.OnSlotUpdated(location);
                 }
             }

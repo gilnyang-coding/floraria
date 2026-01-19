@@ -21,6 +21,8 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     [Header("위치 설정")]
     [SerializeField] protected Vector2 ingredientsTextOffset = new Vector2(0f, -25f); // 재료 텍스트의 제목으로부터의 오프셋 (X: 좌우, Y: 위아래, 음수면 아래)
     [SerializeField] protected float margin = 50f; // 툴팁 크기의 여유 공간 (픽셀)
+    [SerializeField] protected float ingredientOffsetPerItem = -300f; // 재료 하나당 Y 오프셋 (재료 개수에 따라 동적으로 적용)
+    [SerializeField] protected float titleOffsetPerItem = 150f; // 재료 하나 추가될 때마다 타이틀 텍스트 Y 오프셋 증가량 (재료 1개: 0, 2개: 150, 3개: 300...)
     
     // 타이틀의 초기 위치 (margin 적용 전)
     protected Vector3? titleInitialPosition = null;
@@ -113,7 +115,10 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     /// 툴팁 표시
     /// </summary>
     public virtual void Show(CraftingRecipe recipe, bool canCraft, Vector3 position, Dictionary<string, bool> ingredientAvailability) {
-        if (recipe == null) return;
+        if (recipe == null) {
+            Debug.LogWarning($"[{GetType().Name}] 레시피가 null입니다.");
+            return;
+        }
         
         gameObject.SetActive(true);
         if (canvasGroup != null) canvasGroup.alpha = 1f;
@@ -132,6 +137,8 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
                 : ColorUtility.ToHtmlStringRGB(unavailableColor);
             
             titleText.text = $"<color=#{colorHex}>{title}</color>";
+        } else {
+            Debug.LogWarning($"[{GetType().Name}] titleText가 할당되지 않았습니다.");
         }
         
         // 재료 텍스트 생성 (색상 적용)
@@ -139,16 +146,42 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
             ingredientsText.enableWordWrapping = false; // 줄바꿈 비활성화
             ingredientsText.overflowMode = TextOverflowModes.Overflow; // 넘치면 그냥 표시
             ingredientsText.text = BuildIngredientsText(recipe, ingredientAvailability);
+        } else {
+            if (ingredientsText == null) {
+                Debug.LogWarning($"[{GetType().Name}] ingredientsText가 할당되지 않았습니다.");
+            }
+            if (recipe.ingredients == null) {
+                Debug.LogWarning($"[{GetType().Name}] 레시피의 ingredients가 null입니다.");
+            }
+        }
+        
+        // 재료 개수에 따라 Y 오프셋 계산
+        int ingredientCount = recipe.ingredients != null ? recipe.ingredients.Length : 0;
+        float dynamicYOffset = ingredientCount * ingredientOffsetPerItem; // 재료 텍스트용
+        float titleYOffset = (ingredientCount - 1) * titleOffsetPerItem; // 타이틀 텍스트용 (재료 1개: 0, 2개: 150, 3개: 300...)
+        
+        // 타이틀 텍스트 위치 조정
+        if (titleText != null) {
+            RectTransform titleRect = titleText.rectTransform;
+            Vector2 currentPos = titleRect.anchoredPosition;
+            titleRect.anchoredPosition = new Vector2(currentPos.x, titleYOffset);
         }
         
         // 재료 텍스트 위치를 제목 기준으로 먼저 설정 (크기 계산을 위해)
-        UpdateIngredientsTextPosition();
+        UpdateIngredientsTextPosition(dynamicYOffset);
         
         // 텍스트 크기 계산 후 툴팁 크기 조정
-        UpdateTooltipSize();
+        UpdateTooltipSize(dynamicYOffset);
         
-        // 크기 조정 후 위치 다시 설정 (크기가 바뀌었을 수 있으므로)
-        UpdateIngredientsTextPosition();
+        // 크기 조정 후 타이틀 위치 다시 설정 (크기 변경으로 인한 위치 이동 방지)
+        if (titleText != null) {
+            RectTransform titleRect = titleText.rectTransform;
+            Vector2 currentPos = titleRect.anchoredPosition;
+            titleRect.anchoredPosition = new Vector2(currentPos.x, titleYOffset);
+        }
+        
+        // 크기 조정 후 재료 텍스트 위치 다시 설정 (크기가 바뀌었을 수 있으므로)
+        UpdateIngredientsTextPosition(dynamicYOffset);
         
         // 전달받은 position 파라미터로 위치 설정
         if (tooltipRect != null) {
@@ -188,7 +221,7 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     /// <summary>
     /// 툴팁 크기를 타이틀과 재료 텍스트에 맞춰 자동 조정
     /// </summary>
-    protected virtual void UpdateTooltipSize() {
+    protected virtual void UpdateTooltipSize(float dynamicYOffset = 0f) {
         if (tooltipRect == null || titleText == null || ingredientsText == null) return;
         
         // RectTransform 설정이 올바른지 확인 (매번 확인하여 Inspector 설정이 덮어쓰는 것을 방지)
@@ -215,10 +248,10 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
         Vector2 titlePos = titleRect.anchoredPosition;
         Vector2 titlePivot = titleRect.pivot;
         
-        // 재료 텍스트의 위치 (로컬 좌표 기준, 아직 설정되지 않았을 수 있으므로 계산)
+        // 재료 텍스트의 위치 (로컬 좌표 기준, 동적 Y 오프셋 적용)
         Vector2 ingredientsPos = new Vector2(
             titlePos.x + ingredientsTextOffset.x,
-            titlePos.y + ingredientsTextOffset.y
+            titlePos.y + ingredientsTextOffset.y + dynamicYOffset
         );
         Vector2 ingredientsPivot = ingredientsRect.pivot;
         
@@ -257,17 +290,17 @@ public abstract class BaseCraftingTooltip : MonoBehaviour {
     /// <summary>
     /// 재료 텍스트 위치를 제목 기준으로 설정
     /// </summary>
-    protected virtual void UpdateIngredientsTextPosition() {
+    protected virtual void UpdateIngredientsTextPosition(float dynamicYOffset = 0f) {
         if (titleText == null || ingredientsText == null) return;
         
         RectTransform titleRect = titleText.rectTransform;
         RectTransform ingredientsRect = ingredientsText.rectTransform;
         
-        // 제목의 위치를 기준으로 재료 텍스트 배치
+        // 제목의 위치를 기준으로 재료 텍스트 배치 (동적 Y 오프셋 적용)
         Vector3 titlePos = titleRect.localPosition;
         ingredientsRect.localPosition = new Vector3(
             titlePos.x + ingredientsTextOffset.x,
-            titlePos.y + ingredientsTextOffset.y,
+            titlePos.y + ingredientsTextOffset.y + dynamicYOffset,
             titlePos.z
         );
     }

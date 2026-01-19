@@ -83,11 +83,11 @@ public ItemData data;
             // 1. 에셋의 싱글톤 컨트롤러가 존재하는지 확인합니다.
             if (InventoryController.instance != null) {
                 // 2. 먼저 핫바에 추가를 시도합니다. 핫바가 가득 차면 플레이어 인벤토리에 추가합니다.
-                string targetInventory = "PlayerInventory";
+                string targetInventory = InventoryNames.PlayerInventory;
                 
                 // 핫바가 가득 차지 않았으면 핫바에 추가, 가득 찼으면 플레이어 인벤토리에 추가
-                if (!InventoryController.instance.InventoryFull("Hotbar", data.itemName)) {
-                    targetInventory = "Hotbar";
+                if (!InventoryController.instance.InventoryFull(InventoryNames.Hotbar, data.itemName)) {
+                    targetInventory = InventoryNames.Hotbar;
                 }
                 
                 InventoryController.instance.AddItem(targetInventory, data.itemName, 1);

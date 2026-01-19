@@ -87,10 +87,10 @@ public class WorldTreeInteractable : BaseInteractable {
         }
         
         // 먼저 핫바에 추가 시도, 가득 차면 플레이어 인벤토리에 추가
-        string targetInventory = "PlayerInventory";
+        string targetInventory = InventoryNames.PlayerInventory;
         
-        if (!InventoryController.instance.InventoryFull("Hotbar", rewardItemName)) {
-            targetInventory = "Hotbar";
+        if (!InventoryController.instance.InventoryFull(InventoryNames.Hotbar, rewardItemName)) {
+            targetInventory = InventoryNames.Hotbar;
         }
         
         InventoryController.instance.AddItem(targetInventory, rewardItemName, rewardItemCount);

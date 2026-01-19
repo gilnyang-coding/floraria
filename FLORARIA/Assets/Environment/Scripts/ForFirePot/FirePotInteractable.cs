@@ -44,7 +44,7 @@ public class FirePotInteractable : BaseInteractable {
         
         // PlayerInventory UI도 찾기
         try {
-            Inventory playerInv = InventoryController.instance.GetInventory("PlayerInventory");
+            Inventory playerInv = InventoryController.instance.GetInventory(InventoryNames.PlayerInventory);
             if (playerInv != null) {
                 playerInventoryUI = playerInv.GetUI();
             }
@@ -155,7 +155,7 @@ public class FirePotInteractable : BaseInteractable {
         if (InventoryController.instance == null) return;
         
         try {
-            Inventory playerInventory = InventoryController.instance.GetInventory("PlayerInventory");
+            Inventory playerInventory = InventoryController.instance.GetInventory(InventoryNames.PlayerInventory);
             if (playerInventory != null) {
                 GameObject playerInvUI = playerInventory.GetUI();
                 if (playerInvUI != null) {
@@ -172,7 +172,7 @@ public class FirePotInteractable : BaseInteractable {
         if (InventoryController.instance == null) return;
         
         try {
-            Inventory playerInventory = InventoryController.instance.GetInventory("PlayerInventory");
+            Inventory playerInventory = InventoryController.instance.GetInventory(InventoryNames.PlayerInventory);
             if (playerInventory != null) {
                 GameObject playerInvUI = playerInventory.GetUI();
                 if (playerInvUI != null) {

@@ -84,6 +84,20 @@ namespace InventorySystem
                 if (result.gameObject.CompareTag("Slot"))
                 {
                     Slot slot = result.gameObject.GetComponent<Slot>();
+                    string inventoryName = slot.GetInventoryUI().GetInventoryName();
+                    
+                    // CraftTable, FirePot, AlchemyPot은 드래그 불가
+                    if (inventoryName == InventoryNames.CraftTable || inventoryName == InventoryNames.FirePot || inventoryName == InventoryNames.AlchemyPot)
+                    {
+                        if (prevslot != null && prevslot != result.gameObject)
+                        {
+                            prevslot.GetComponent<Slot>().GetInventoryUI().UnHighlight(prevslot);
+                            prevslot.GetComponent<Slot>().GetInventoryUI().ResetHighlight();
+                        }
+                        prevslot = null;
+                        break;
+                    }
+                    
                     if (slot.GetItem().GetIsNull() && slot.GetInventoryUI().GetInventory().CheckAcceptance(item.GetItemType()))
                     {
                         slot.GetInventoryUI().Highlight(result.gameObject);
@@ -179,7 +193,7 @@ namespace InventorySystem
             
             // Furnace 입력 슬롯 체크: 레시피에 등록된 아이템만 넣을 수 있음
             string inventoryName = slot.GetInventoryUI().GetInventoryName();
-            if (inventoryName == "Furnace" && FurnaceManager.Instance != null) {
+            if (inventoryName == InventoryNames.Furnace && FurnaceManager.Instance != null) {
                 int slotPosition = slot.GetPosition();
                 if (slotPosition == FurnaceManager.Instance.GetInputSlotIndex()) {
                     // 입력 슬롯에 드롭 시도
@@ -189,6 +203,12 @@ namespace InventorySystem
                         return;
                     }
                 }
+            }
+            
+            // CraftTable, FirePot, AlchemyPot은 아이템 드롭 불가
+            if (inventoryName == InventoryNames.CraftTable || inventoryName == InventoryNames.FirePot || inventoryName == InventoryNames.AlchemyPot) {
+                HandleInvalidPlacement(true);
+                return;
             }
 
             if ((slotNull || itemStackable) && itemAcceptedInInventory)
